@@ -2,9 +2,9 @@ Main.java
  Main
 REST/AdministationServer.java
  REST.AdministationServer
+REST/ThermalPowerPlant.java
+ REST.ThermalPowerPlant
 REST/ThermalPowerPlantController.java
  REST.ThermalPowerPlantController
 REST/ThermalPowerPlantService.java
  REST.ThermalPowerPlantService
-REST/ThermalPowerPlant.java
- REST.ThermalPowerPlant
