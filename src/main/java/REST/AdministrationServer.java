@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class AdministationServer {
+public class AdministrationServer {
 
     public static void main(String[] args) {
-        SpringApplication.run(AdministationServer.class, args);
+        SpringApplication.run(AdministrationServer.class, args);
         System.out.println("Server running on http://localhost:8080");
     }
 }
