@@ -6,6 +6,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/*
+    Controller = intermediario tra il client ed il livello di servizio
+    •	Riceve richieste HTTP (es. GET, POST, ecc.).
+    •	Interpreta e valida gli input (es. parametri, corpo della richiesta).
+    •	Chiama il service appropriato per eseguire la logica applicativa.
+    •	Restituisce una risposta HTTP al client, con eventuali dati o codici di stato.
+ */
+
 @RestController
 @RequestMapping("/thermalPowerPlants")
 public class ThermalPowerPlantController {
@@ -23,9 +31,10 @@ public class ThermalPowerPlantController {
         return ResponseEntity.ok(thermalPowerPlantService.getThermalPowerPlantList());
     }
 
-    // Add a new thermalPowerPlant
+    // Add a new thermalPowerPlant in the body of the request
     @PostMapping("/add")
-    public ResponseEntity<Void> addUser(@RequestBody ThermalPowerPlant thermalPowerPlant) {
+    public ResponseEntity<Void> addThermalPowerPlant(@RequestBody ThermalPowerPlant thermalPowerPlant) {
+        System.out.println(">>>[Controller] addThermalPowerPlant called with: " + thermalPowerPlant);
         thermalPowerPlantService.add(thermalPowerPlant);
         return ResponseEntity.ok().build();
     }

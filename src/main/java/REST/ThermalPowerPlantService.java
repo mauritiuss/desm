@@ -4,10 +4,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-
 /*
-    Collection of resourses --> List of Thermal power plant
- */
+    Service è il componente centrale della logica applicativa per:
+    •	Aggiungere, leggere, cercare gli impianti
+	•	Garantire sincronizzazione base
+	•	Essere usato dal controller per rispondere alle richieste REST
+	Collection of resourses --> List of Thermal power plant
+*/
+
 @Service
 public class ThermalPowerPlantService {
     private final List<ThermalPowerPlant> thermalPowerPlantList = new ArrayList<>();
@@ -22,11 +26,11 @@ public class ThermalPowerPlantService {
     }
 
     public synchronized void add(ThermalPowerPlant thermalPowerPlant) {
+        System.out.println(">>>[Serice] Added power plant with ID: " + thermalPowerPlant.getId());
         thermalPowerPlantList.add(thermalPowerPlant);
     }
 
     public synchronized ThermalPowerPlant getById(String id) {
-        System.out.println("called");
         for (ThermalPowerPlant thermalPowerPlant : thermalPowerPlantList) {
             System.out.println(thermalPowerPlant.getId());
             System.out.println(id);
