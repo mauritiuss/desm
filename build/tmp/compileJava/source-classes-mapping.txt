@@ -1,20 +1,35 @@
-REST/ThermalPowerPlant.java
- REST.ThermalPowerPlant
-Main.java
- Main
+AdministrationServer/REST/RESTServerProperties.java
+ AdministrationServer.REST.RESTServerProperties
+common/MQTT/MQTTProperties.java
+ common.MQTT.MQTTProperties
 AdministrationClient/AdministrationClient.java
  AdministrationClient.AdministrationClient
 AdministrationClient/DisplayableMenu.java
  AdministrationClient.DisplayableMenu
-AdministrationServer/RESTServerProperties.java
- AdministrationServer.RESTServerProperties
-AdministrationClient/ClientMenu.java
- AdministrationClient.ClientMenu
 AdministrationServer/REST/ThermalPowerPlantService.java
  AdministrationServer.REST.ThermalPowerPlantService
-AdministrationClient/REST/AdministrationClientRESTConnector.java
- AdministrationClient.REST.AdministrationClientRESTConnector
+ThermalPowerPlant/REST/ThermalPowerPlantRESTConnector.java
+ ThermalPowerPlant.REST.ThermalPowerPlantRESTConnector
 AdministrationServer/REST/ThermalPowerPlantController.java
  AdministrationServer.REST.ThermalPowerPlantController
 AdministrationServer/AdministrationServer.java
  AdministrationServer.AdministrationServer
+AdministrationClient/ClientMenu.java
+ AdministrationClient.ClientMenu
+Main.java
+ Main
+ThermalPowerPlant/ThermalPowerPlantRunner.java
+ ThermalPowerPlant.ThermalPowerPlantRunner
+common/prova.java
+ common.prova
+ThermalPowerPlant/ThermalPowerPlant.java
+ ThermalPowerPlant.ThermalPowerPlant
+AdministrationClient/REST/AdministrationClientRESTConnector.java
+ AdministrationClient.REST.AdministrationClientRESTConnector
+RenewableEnergyProvider/RenewableEnergyProvider.java
+ RenewableEnergyProvider.RenewableEnergyProvider
+ RenewableEnergyProvider.RenewableEnergyProvider$1
+ThermalPowerPlant/MQTT/ThermalPowerPlantMQTTConnector.java
+ ThermalPowerPlant.MQTT.ThermalPowerPlantMQTTConnector
+common/MQTT/MQTTConnector.java
+ common.MQTT.MQTTConnector

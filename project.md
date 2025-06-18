@@ -35,7 +35,11 @@ Per questo progetto, è necessario sviluppare le seguenti applicazioni:
 Si prega di notare che ogni Thermal Power Plant è un processo autonomo, e quindi non deve essere implementato come un thread. Di seguito, forniamo maggiori dettagli sulle applicazioni che devono essere sviluppate.
 
 # 4 Renewable energy provider 
-Il Renewable Energy Provider rinnovabile genera una richiesta di energia ogni 10 secondi, specificando la quantità di energia richiesta in chilowattora (kWh) insieme a un timestamp. La quantità di energia è un numero generato casualmente tra 5000 e 15000. Questa richiesta viene quindi pubblicata su un argomento MQTT, a cui sono sottoscritti tutti gli impianti termici della rete. La richiesta rimane in tema fino a quando non viene selezionato un impianto per fornire l'energia richiesta.
+Il Renewable Energy Provider rinnovabile genera una richiesta di energia ogni 10 secondi, 
+specificando la quantità di energia richiesta in chilowattora (kWh) insieme a un timestamp. 
+La quantità di energia è un numero generato casualmente tra 5000 e 15000. 
+Questa richiesta viene quindi pubblicata su un argomento MQTT, a cui sono sottoscritti tutti gli impianti termici della rete. 
+La richiesta rimane in tema fino a quando non viene selezionato un impianto per fornire l'energia richiesta.
 
 # 5 Thermal Power Plant
 Ogni Thermal Power Plant esegue un processo che è responsabile di: 
