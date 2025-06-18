@@ -1,7 +1,7 @@
 package AdministrationClient;
 
 import AdministrationClient.REST.AdministrationClientRESTConnector;
-import common.ThermalPowerPlant;
+import ThermalPowerPlant.ThermalPowerPlant;
 
 import java.util.Scanner;
 
