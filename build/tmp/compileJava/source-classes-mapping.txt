@@ -1,10 +1,20 @@
-Main.java
- Main
-REST/AdministationServer.java
- REST.AdministationServer
 REST/ThermalPowerPlant.java
  REST.ThermalPowerPlant
-REST/ThermalPowerPlantController.java
- REST.ThermalPowerPlantController
-REST/ThermalPowerPlantService.java
- REST.ThermalPowerPlantService
+Main.java
+ Main
+AdministrationClient/AdministrationClient.java
+ AdministrationClient.AdministrationClient
+AdministrationClient/DisplayableMenu.java
+ AdministrationClient.DisplayableMenu
+AdministrationServer/RESTServerProperties.java
+ AdministrationServer.RESTServerProperties
+AdministrationClient/ClientMenu.java
+ AdministrationClient.ClientMenu
+AdministrationServer/REST/ThermalPowerPlantService.java
+ AdministrationServer.REST.ThermalPowerPlantService
+AdministrationClient/REST/AdministrationClientRESTConnector.java
+ AdministrationClient.REST.AdministrationClientRESTConnector
+AdministrationServer/REST/ThermalPowerPlantController.java
+ AdministrationServer.REST.ThermalPowerPlantController
+AdministrationServer/AdministrationServer.java
+ AdministrationServer.AdministrationServer
