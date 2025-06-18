@@ -2,9 +2,9 @@
 
 ## 1° STEP
 ### REST server e MQTT
-- Progettazione dell'Administration server (risorse e metodi) 
-- Analisi dei problemi di sincronizzazione
-- Test del Server REST con strumenti dedicati
+- Progettazione dell'Administration server (risorse e metodi) ✅
+- Analisi dei problemi di sincronizzazione ✅
+- Test del Server REST con strumenti dedicati ✅
 - Sviluppo dell'Administration client
 - Progettazione del Renewable Energy Provider
 - Implementazione del protocollo MQTT per pubblicare le richieste del Renewable Energy Provider
