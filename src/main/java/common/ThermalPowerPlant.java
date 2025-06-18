@@ -1,17 +1,30 @@
-package REST;
+package common;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ThermalPowerPlant {
     private String id;
     private String address;
     private int port;
 
-    //Remember to always add an empty constructor
+    //Costruttore vuoto
     public ThermalPowerPlant() {}
 
     public ThermalPowerPlant(String id, String address, int port) {
         this.id = id;
         this.address = address;
         this.port = port;
+    }
+
+    //Costruttore a partire da un Json
+    @JsonCreator
+    public ThermalPowerPlant(@JsonProperty("id") String id,
+                             @JsonProperty("address") String address,
+                             @JsonProperty("port") String port) {
+        this.id = id;
+        this.address = address;
+        this.port = Integer.parseInt(port);
     }
 
     public String getId() { return id; }
@@ -36,7 +49,7 @@ public class ThermalPowerPlant {
 
     @Override
     public String toString() {
-        return "ThermalPowerPlant{" +
+        return "REST.ThermalPowerPlant{" +
                 "id='" + id + '\'' +
                 ", address='" + address + '\'' +
                 ", port=" + port +
