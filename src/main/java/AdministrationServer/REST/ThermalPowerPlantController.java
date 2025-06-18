@@ -1,5 +1,6 @@
-package REST;
+package AdministrationServer.REST;
 
+import common.ThermalPowerPlant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,26 +26,26 @@ public class ThermalPowerPlantController {
         this.thermalPowerPlantService = thermalPowerPlantService;
     }
 
-    // Return list of thermalPowerPlant
+    // Ritorna la lista delle Thermal Power Plant
     @GetMapping
     public ResponseEntity<List<ThermalPowerPlant>> getThermalPowerPlantList() {
         System.out.println(">>>[Controller] getThermalPowerPlantList called\n");
         return ResponseEntity.ok(thermalPowerPlantService.getThermalPowerPlantList());
     }
 
-    // Add a new thermalPowerPlant in the body of the request
+    // Aggiunge una nuova Thermal Power Plant nel body della richiesta
     @PostMapping("/add")
     public ResponseEntity<Void> addThermalPowerPlant(@RequestBody ThermalPowerPlant thermalPowerPlant) {
-        System.out.println(">>>[Controller] addThermalPowerPlant called with: " + thermalPowerPlant+ "\n");
+        System.out.println(">>>[Controller] addThermalPowerPlant called with: " + thermalPowerPlant);
         thermalPowerPlantService.add(thermalPowerPlant);
         return ResponseEntity.ok().build();
     }
 
-    // Get thermalPowerPlant by Id
+    // Ritorna una Thermal Power Plant tramite l'ID
     @GetMapping("/get/{id}")
     public ResponseEntity<ThermalPowerPlant> getById(@PathVariable String id) {
         ThermalPowerPlant thermalPowerPlant = thermalPowerPlantService.getById(id);
-        System.out.println(">>>[Controller] getById called with: " + id + "\n");
+        System.out.println(">>>[Controller] getById called with: " + id);
         if (thermalPowerPlant != null)
             return ResponseEntity.ok(thermalPowerPlant);
         else

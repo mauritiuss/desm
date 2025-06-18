@@ -1,8 +1,11 @@
-package REST;
+package AdministrationServer;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+/**
+ * Questa classe è usata per far partire il Server
+ */
 @SpringBootApplication
 public class AdministrationServer {
 

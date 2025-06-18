@@ -1,5 +1,6 @@
-package REST;
+package AdministrationServer.REST;
 
+import common.ThermalPowerPlant;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,7 @@ public class ThermalPowerPlantService {
     private final List<ThermalPowerPlant> thermalPowerPlantList = new ArrayList<>();
 
     public synchronized List<ThermalPowerPlant> getThermalPowerPlantList() {
-        System.out.println(">>>[Serice] Return all ThermalPowerPlantList");
+        System.out.println(">>>[Serice] Return all ThermalPowerPlantList\n");
         return new ArrayList<>(thermalPowerPlantList);
     }
 
@@ -26,7 +27,7 @@ public class ThermalPowerPlantService {
     }
 
     public synchronized void add(ThermalPowerPlant thermalPowerPlant) {
-        System.out.println(">>>[Serice] Added thermal power plant with ID: " + thermalPowerPlant.getId());
+        System.out.println(">>>[Serice] Added thermal power plant with ID: " + thermalPowerPlant.getId()+"\n");
         thermalPowerPlantList.add(thermalPowerPlant);
     }
 
