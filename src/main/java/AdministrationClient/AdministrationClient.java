@@ -1,6 +1,8 @@
 package AdministrationClient;
 
-
+/**
+ * Questa classe è usata per far partire il Client
+ */
 public class AdministrationClient {
 
     public static void main(String[] args) {

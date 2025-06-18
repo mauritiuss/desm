@@ -1,4 +1,4 @@
-package common;
+package ThermalPowerPlant;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
