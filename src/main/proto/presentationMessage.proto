@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option java_package = "ThermalPowerPlant.grpc";
+option java_outer_classname = "PresentationProto";
+
+service ThermalPowerPlantService {
+  rpc PresentYourself(PresentationMessage) returns (PresentationAck);
+}
+
+message PresentationMessage {
+  string id = 1;
+  string address = 2;
+  int32 port = 3;
+}
+
+message PresentationAck {
+  string message = 1;
+}
