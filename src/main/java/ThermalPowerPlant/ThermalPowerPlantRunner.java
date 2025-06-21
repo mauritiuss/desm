@@ -2,42 +2,65 @@ package ThermalPowerPlant;
 
 import ThermalPowerPlant.MQTT.ThermalPowerPlantMQTTConnector;
 import ThermalPowerPlant.REST.ThermalPowerPlantRESTConnector;
+import ThermalPowerPlant.gRPC.ThermalPowerPlantGRPCConnector;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.Random;
 
+
 /**
  * Questa classe è usata per far partire una ThermalPowerPlant
  */
-public class ThermalPowerPlantRunner {
+public class ThermalPowerPlantRunner extends Thread{
+    private static final Random random = new Random();
+    private static ThermalPowerPlant thermalPowerPlant;
 
     public ThermalPowerPlantRunner() { ThermalPowerPlantRESTConnector.getInstance(); }
 
-    private static ThermalPowerPlant thermalPowerPlant;
-    private static Random random = new Random();
-
     public static void main(String[] args) {
+
+        //1. Registrazione della ThermalPowerPlant --> REST
+        thermalPowerPlant = registerThermalPowerPlant();
+
+        if (thermalPowerPlant == null) { //Se non va a buon fine blocca tutto
+            System.out.println(">>>[ThermalPowerPlantRunner] Impossibile registrare la ThermalPowerPlant.");
+            System.exit(0);
+        }else{ //Se va a buon fine
+
+            //2. Crea un collegamento per la comunicazione gRPC
+            new Thread(() -> {
+                new ThermalPowerPlantGRPCConnector();
+            }).start();
+
+            //3. Crea un collegamento per la comunicazione MQTT
+            new Thread(() -> {
+                new ThermalPowerPlantMQTTConnector();
+            }).start();
+        }
+
+    }
+
+    /**
+     * Registra una nuova ThermalPowerPlant generando ID, address e porta dinamica.
+     * @return la ThermalPowerPlant se registrata correttamente, null altrimenti.
+     */
+    private static ThermalPowerPlant registerThermalPowerPlant() {
         String id = String.valueOf(random.nextInt(Integer.MAX_VALUE - 1) + 1); // id > 0
         String address = "localhost";
         int port = getFreePort();
-        thermalPowerPlant = new ThermalPowerPlant(id, address, port);
+        ThermalPowerPlant plant = new ThermalPowerPlant(id, address, port);
 
-        ThermalPowerPlantRESTConnector.getInstance().addThermalPowerPlant(thermalPowerPlant);
+        boolean success = ThermalPowerPlantRESTConnector.getInstance().addThermalPowerPlant(plant);
 
-
-
-
-
-
-
-
-
-
-
-        //new ThermalPowerPlantMQTTConnector();
+        if (success) {
+            System.out.println(">>>[ThermalPowerPlantRunner] Inserimento della ThermalPowerPlant avvenuto correttamente");
+            return plant;
+        } else {
+            System.out.println(">>>[ThermalPowerPlantRunner] Inserimento della ThermalPowerPlant fallito");
+            return null;
+        }
     }
-
 
     /**
      * Restituisce una porta TCP libera assegnata dinamicamente dal sistema operativo.
@@ -51,4 +74,6 @@ public class ThermalPowerPlantRunner {
             throw new RuntimeException(">>>[ThermalPowerPlantRunner] Nessuna porta disponibile, errore: "+e);
         }
     }
+
+
 }

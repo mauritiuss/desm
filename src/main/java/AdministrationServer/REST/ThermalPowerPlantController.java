@@ -2,6 +2,7 @@ package AdministrationServer.REST;
 
 import ThermalPowerPlant.ThermalPowerPlant;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,22 +27,37 @@ public class ThermalPowerPlantController {
         this.thermalPowerPlantService = thermalPowerPlantService;
     }
 
-    // Ritorna la lista delle Thermal Power Plant
+    /**
+     * Questo metodo restituisce la lista di tutte le ThermalPowerPlant presenti.
+     * @return ResponseEntity contenente una lista di ThermalPowerPlant.
+     */
     @GetMapping
     public ResponseEntity<List<ThermalPowerPlant>> getThermalPowerPlantList() {
-        System.out.println(">>>[Controller] getThermalPowerPlantList called\n");
+        System.out.println(">>>[Controller] getThermalPowerPlantList chiamato\n");
         return ResponseEntity.ok(thermalPowerPlantService.getThermalPowerPlantList());
     }
 
-    // Aggiunge una nuova Thermal Power Plant nel body della richiesta
+    /**
+     * Questo metodo invia una richiesta POST al controller per aggiungere una nuova ThermalPowerPlant.
+     * @param thermalPowerPlant l'oggetto ThermalPowerPlant da aggiungere.
+     * @return ResponseEntity con stato 200 (OK) se l'aggiunta ha successo, 409 (CONFLICT) altrimenti.
+     */
     @PostMapping("/add")
     public ResponseEntity<Void> addThermalPowerPlant(@RequestBody ThermalPowerPlant thermalPowerPlant) {
-        System.out.println(">>>[Controller] addThermalPowerPlant called with: " + thermalPowerPlant);
-        thermalPowerPlantService.add(thermalPowerPlant);
-        return ResponseEntity.ok().build();
+        boolean success = thermalPowerPlantService.add(thermalPowerPlant);
+
+        if (success) {
+            return ResponseEntity.ok().build(); // 200 ok
+        }else{
+            return ResponseEntity.status(HttpStatus.CONFLICT).build(); //409 conflict
+        }
     }
 
-    // Ritorna una Thermal Power Plant tramite l'ID
+    /**
+     * Questo metodo restituisce una ThermalPowerPlant identificata da un ID specifico.
+     * @param id l'identificatore univoco della ThermalPowerPlant.
+     * @return ResponseEntity contenente la ThermalPowerPlant se trovata, 404 (NOT FOUND) altrimenti.
+     */
     @GetMapping("/get/{id}")
     public ResponseEntity<ThermalPowerPlant> getById(@PathVariable String id) {
         ThermalPowerPlant thermalPowerPlant = thermalPowerPlantService.getById(id);
