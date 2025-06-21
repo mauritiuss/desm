@@ -1,6 +1,13 @@
 package ThermalPowerPlant.REST;
 
+import AdministrationServer.REST.RESTServerProperties;
+import ThermalPowerPlant.ThermalPowerPlant;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+
+import static AdministrationServer.REST.RESTServerProperties.BASE_URL;
 
 /**
  * Questa classe contiene tutti i metodi che permettono
@@ -10,6 +17,7 @@ public class ThermalPowerPlantRESTConnector {
     private static ThermalPowerPlantRESTConnector instance;
     private static final RestTemplate restTemplate = new RestTemplate();
 
+    // Costruttore vuoto
     private ThermalPowerPlantRESTConnector() {}
 
     /**
@@ -29,5 +37,55 @@ public class ThermalPowerPlantRESTConnector {
      */
     private static void initializeConnection() { instance = new ThermalPowerPlantRESTConnector(); }
 
+
+    /**
+     * Questo metodo invia una richiesta POST al controller per aggiungere una nuova ThermalPowerPlant.
+     * @param thermalPowerPlant l'oggetto ThermalPowerPlant da aggiungere.
+     * @return boolean true se la ThermalPowerPlant è stata aggiunta, false altrimenti.
+     */
+    public boolean addThermalPowerPlant(ThermalPowerPlant thermalPowerPlant) {
+        try{
+            String url = RESTServerProperties.BASE_URL + "/add";
+            ResponseEntity<Void> response = restTemplate.postForEntity(url, thermalPowerPlant, Void.class);
+
+            if(response.getStatusCode().is2xxSuccessful()){
+                System.out.println(">>>[ThermalPowerPlantRESTConnector] ThermalPowerPlant inviata correttamente");
+                return true;
+            }else if (response.getStatusCode() == HttpStatus.CONFLICT) {
+                System.out.println(">>>[ThermalPowerPlantRESTConnector] ID già esistente: "+thermalPowerPlant.getId());
+                return false;
+            }else{
+                System.out.println(">>>[ThermalPowerPlantRESTConnector] Risposta inaspettata");
+                return false;
+            }
+        }catch (HttpClientErrorException e) {
+            if(e.getStatusCode() == HttpStatus.CONFLICT){
+                System.out.println(">>>[ThermalPowerPlantRESTConnector] ID già presente (Errore 409): " + thermalPowerPlant.getId());
+                return false;
+            }else{
+                System.out.println(">>>[ThermalPowerPlantRESTConnector] Errore HTTP: " + e.getStatusCode());
+                return false;
+            }
+        }catch (Exception e) {
+            System.out.println(">>>[ThermalPowerPlantRESTConnector] Errore durante l'invio della ThermalPowerPlant: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Questo metodo chiama il controller del server per ottenere tutte le informazioni delle Thermal Power Plants.
+     * @return Un array di REST.ThermalPowerPlant.
+     */
+    public ThermalPowerPlant[] getThermalPowerPlants() {
+        try {
+            ResponseEntity<ThermalPowerPlant[]> response =
+                    restTemplate.getForEntity(BASE_URL, ThermalPowerPlant[].class);
+
+            return response.getBody() != null ? response.getBody() : new ThermalPowerPlant[0];
+        } catch (Exception e) {
+            System.err.println("Errore durante la richiesta al server: " + e.getMessage());
+            return new ThermalPowerPlant[0];
+        }
+    }
 
 }
