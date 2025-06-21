@@ -32,7 +32,7 @@ public class ThermalPowerPlantMQTTConnector extends MQTTConnector {
         System.out.println(">>>[ThermalPowerPlantMQTTConnector] Topic: "+topic);
         System.out.println(">>>[ThermalPowerPlantMQTTConnector] Payload: "+payload + "\n");
 
-
+        //TODO --> Cosa deve fare quando riceve una richiesta di energia
 
         // Simula decisione (50% di probabilità di accettare la richiesta)
         if (Math.random() < 0.5) {
@@ -42,6 +42,5 @@ public class ThermalPowerPlantMQTTConnector extends MQTTConnector {
             System.out.println(">>>[ThermalPowerPlantMQTTConnector] Richiesta IGNORATA da questa TPP");
         }
 
-        //TODO --> Cosa deve fare quando riceve una richiesta di energia
     }
 }
