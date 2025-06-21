@@ -14,6 +14,7 @@ public class AdministrationClientRESTConnector {
     private static AdministrationClientRESTConnector instance;
     private static final RestTemplate restTemplate = new RestTemplate();
 
+    // Costruttore vuoto
     private AdministrationClientRESTConnector() {}
 
     /**
