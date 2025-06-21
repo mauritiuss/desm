@@ -3,6 +3,9 @@ package common.MQTT;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
+/**
+ * Questa classe astratta contiene tutti i metodi per la comunicazione MQTT
+ */
 public abstract class MQTTConnector implements MqttCallbackExtended {
     protected MqttClient client;
     protected MqttConnectOptions options;
