@@ -7,6 +7,7 @@ public class ThermalPowerPlant {
     private String id;
     private String address;
     private int port;
+    private ThermalPowerPlant nextThermalPowerPlant; // ThermalPowerPlant Successiva
 
     //Costruttore vuoto
     public ThermalPowerPlant() {}
@@ -45,6 +46,14 @@ public class ThermalPowerPlant {
 
     public void setPort(int port) {
         this.port = port;
+    }
+
+    public void setNextThermalPowerPlant(ThermalPowerPlant nextThermalPowerPlant) {
+        this.nextThermalPowerPlant = nextThermalPowerPlant;
+    }
+
+    public ThermalPowerPlant getNextThermalPowerPlant() {
+        return nextThermalPowerPlant;
     }
 
     @Override
