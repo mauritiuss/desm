@@ -3,11 +3,18 @@ package ThermalPowerPlant;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.sql.Timestamp;
+
 public class ThermalPowerPlant {
     private String id;
     private String address;
     private int port;
-    private ThermalPowerPlant nextThermalPowerPlant; // ThermalPowerPlant Successiva
+
+    /**
+     * Timestamp di creazione della ThermalPowerPlant
+     * Serve in caso due ThermalPowerPlant propongano lo stesso "prezzo"
+    */
+    private Timestamp timestamp;
 
     //Dati della successiva ThermalPowerPlant
     private String nextId;
@@ -24,6 +31,7 @@ public class ThermalPowerPlant {
         this.id = id;
         this.address = address;
         this.port = port;
+        this.timestamp = new Timestamp(System.currentTimeMillis());
     }
 
     //Costruttore a partire da un Json
