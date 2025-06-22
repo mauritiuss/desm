@@ -7,42 +7,28 @@ import java.io.IOException;
 import java.util.Random;
 
 public class ThermalPowerPlantGRPCConnector {
-    private static ThermalPowerPlant thermalPowerPlant;
-    private static final Random random = new Random();
 
     public ThermalPowerPlantGRPCConnector() {
-        /*thermalPowerPlant = registerThermalPowerPlant();
-
-        if (thermalPowerPlant == null) {
-            System.out.println(">>>[ThermalPowerPlantGRPCConnector] Impossibile registrare la ThermalPowerPlant.");
-            System.exit(0);
-        }*/
 
         //1. Avvia il server gRPC sulla porta della ThermalPowerPlant
         startGRPCServer();
 
-        //2. Recupera la centrale successiva
-        ThermalPowerPlant nextPlant = thermalPowerPlant.getNextThermalPowerPlant();
+        //2. Recupera la prima centrale dell'anello (= la successiva)
+        getNextThermalPowerPlant();
 
         //3. Invia il messaggio di presentazione via gRPC
-        if (nextPlant != null && !nextPlant.getId().equals(thermalPowerPlant.getId())) {
-            ThermalPowerPlantClient client = new ThermalPowerPlantClient(nextPlant.getAddress(), nextPlant.getPort());
-            client.sendPresentation(
-                    thermalPowerPlant.getId(),
-                    thermalPowerPlant.getAddress(),
-                    thermalPowerPlant.getPort()
-            );
-            client.shutdown();
-        } else {
-            System.out.println(">>>[ThermalPowerPlantGRPCConnector] Nessun destinatario valido per il messaggio.");
-        }
+        sendPresentationMessage();
 
     }
 
+
+    /**
+     * Avvia il server gRPC sulla porta specificata dalla ThermalPowerPlant.
+     */
     private void startGRPCServer() {
         new Thread(() -> {
             try {
-                ThermalPowerPlantServer server = new ThermalPowerPlantServer(thermalPowerPlant.getPort());
+                ThermalPowerPlantServer server = new ThermalPowerPlantServer(ThermalPowerPlant.getInstance().getPort());
                 server.start();
             } catch (IOException e) {
                 System.err.println(">>>[GRPCConnector] Errore durante l'avvio del server gRPC: " + e.getMessage());
@@ -50,6 +36,7 @@ public class ThermalPowerPlantGRPCConnector {
             }
         }).start();
     }
+
 
     /**
      * Recupera la prima ThermalPowerPlant registrata, se esiste e la mette come next --> Situazione ad anello.
@@ -59,10 +46,40 @@ public class ThermalPowerPlantGRPCConnector {
 
         if (plants != null && plants.length > 0) {
             ThermalPowerPlant firstPlant = plants[0];
-            thermalPowerPlant.setNextThermalPowerPlant(firstPlant);
-            System.out.println(">>>[ThermalPowerPlantRunner] Prima ThermalPowerPlant registrata: " + firstPlant);
+            ThermalPowerPlant.getInstance().setNextId(firstPlant.getId());
+            ThermalPowerPlant.getInstance().setNextAddress(firstPlant.getAddress());
+            ThermalPowerPlant.getInstance().setNextPort(firstPlant.getPort());
+            System.out.println(">>>[ThermalPowerPlantRunner] Prima ThermalPowerPlant dell'anello: " + firstPlant);
         } else {
             System.out.println(">>>[ThermalPowerPlantRunner] Nessuna ThermalPowerPlant trovata.");
+        }
+    }
+
+
+    /**
+     * Invia un messaggio gRPC di presentazione alla next ThermalPowerPlant nell'anello,
+     */
+    private void sendPresentationMessage() {
+        ThermalPowerPlant plant = ThermalPowerPlant.getInstance();
+
+        if (!plant.getId().equals(plant.getNextId()) && plant.getPort() != plant.getNextPort()) {
+            System.out.println(">>>[ThermalPowerPlantGRPCConnector] Invio del messaggio di presentazione.");
+            ThermalPowerPlantClient client = new ThermalPowerPlantClient(
+                    //Creo il client per collegarmi al successore dell'anello
+                    plant.getNextAddress(), plant.getNextPort()
+            );
+            client.sendPresentation(
+                    ThermalPowerPlant.getInstance().getId(),
+                    ThermalPowerPlant.getInstance().getAddress(),
+                    ThermalPowerPlant.getInstance().getPort(),
+                    ThermalPowerPlant.getInstance().getNextId(),
+                    ThermalPowerPlant.getInstance().getNextAddress(),
+                    ThermalPowerPlant.getInstance().getNextPort()
+            );
+            client.shutdown();
+
+        } else {
+            System.out.println(">>>[ThermalPowerPlantGRPCConnector] Nessun destinatario valido per il messaggio.");
         }
     }
 }

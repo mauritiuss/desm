@@ -47,6 +47,36 @@ public final class PresentationProto {
      * @return The port.
      */
     int getPort();
+
+    /**
+     * <code>string nextId = 4;</code>
+     * @return The nextId.
+     */
+    java.lang.String getNextId();
+    /**
+     * <code>string nextId = 4;</code>
+     * @return The bytes for nextId.
+     */
+    com.google.protobuf.ByteString
+        getNextIdBytes();
+
+    /**
+     * <code>string nextAddress = 5;</code>
+     * @return The nextAddress.
+     */
+    java.lang.String getNextAddress();
+    /**
+     * <code>string nextAddress = 5;</code>
+     * @return The bytes for nextAddress.
+     */
+    com.google.protobuf.ByteString
+        getNextAddressBytes();
+
+    /**
+     * <code>int32 nextPort = 6;</code>
+     * @return The nextPort.
+     */
+    int getNextPort();
   }
   /**
    * Protobuf type {@code PresentationMessage}
@@ -63,6 +93,8 @@ public final class PresentationProto {
     private PresentationMessage() {
       id_ = "";
       address_ = "";
+      nextId_ = "";
+      nextAddress_ = "";
     }
 
     @java.lang.Override
@@ -110,6 +142,23 @@ public final class PresentationProto {
             case 24: {
 
               port_ = input.readInt32();
+              break;
+            }
+            case 34: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              nextId_ = s;
+              break;
+            }
+            case 42: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              nextAddress_ = s;
+              break;
+            }
+            case 48: {
+
+              nextPort_ = input.readInt32();
               break;
             }
             default: {
@@ -231,6 +280,93 @@ public final class PresentationProto {
       return port_;
     }
 
+    public static final int NEXTID_FIELD_NUMBER = 4;
+    private volatile java.lang.Object nextId_;
+    /**
+     * <code>string nextId = 4;</code>
+     * @return The nextId.
+     */
+    @java.lang.Override
+    public java.lang.String getNextId() {
+      java.lang.Object ref = nextId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        nextId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string nextId = 4;</code>
+     * @return The bytes for nextId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getNextIdBytes() {
+      java.lang.Object ref = nextId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        nextId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int NEXTADDRESS_FIELD_NUMBER = 5;
+    private volatile java.lang.Object nextAddress_;
+    /**
+     * <code>string nextAddress = 5;</code>
+     * @return The nextAddress.
+     */
+    @java.lang.Override
+    public java.lang.String getNextAddress() {
+      java.lang.Object ref = nextAddress_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        nextAddress_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string nextAddress = 5;</code>
+     * @return The bytes for nextAddress.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getNextAddressBytes() {
+      java.lang.Object ref = nextAddress_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        nextAddress_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int NEXTPORT_FIELD_NUMBER = 6;
+    private int nextPort_;
+    /**
+     * <code>int32 nextPort = 6;</code>
+     * @return The nextPort.
+     */
+    @java.lang.Override
+    public int getNextPort() {
+      return nextPort_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -254,6 +390,15 @@ public final class PresentationProto {
       if (port_ != 0) {
         output.writeInt32(3, port_);
       }
+      if (!getNextIdBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, nextId_);
+      }
+      if (!getNextAddressBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, nextAddress_);
+      }
+      if (nextPort_ != 0) {
+        output.writeInt32(6, nextPort_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -272,6 +417,16 @@ public final class PresentationProto {
       if (port_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(3, port_);
+      }
+      if (!getNextIdBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, nextId_);
+      }
+      if (!getNextAddressBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, nextAddress_);
+      }
+      if (nextPort_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(6, nextPort_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -294,6 +449,12 @@ public final class PresentationProto {
           .equals(other.getAddress())) return false;
       if (getPort()
           != other.getPort()) return false;
+      if (!getNextId()
+          .equals(other.getNextId())) return false;
+      if (!getNextAddress()
+          .equals(other.getNextAddress())) return false;
+      if (getNextPort()
+          != other.getNextPort()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -311,6 +472,12 @@ public final class PresentationProto {
       hash = (53 * hash) + getAddress().hashCode();
       hash = (37 * hash) + PORT_FIELD_NUMBER;
       hash = (53 * hash) + getPort();
+      hash = (37 * hash) + NEXTID_FIELD_NUMBER;
+      hash = (53 * hash) + getNextId().hashCode();
+      hash = (37 * hash) + NEXTADDRESS_FIELD_NUMBER;
+      hash = (53 * hash) + getNextAddress().hashCode();
+      hash = (37 * hash) + NEXTPORT_FIELD_NUMBER;
+      hash = (53 * hash) + getNextPort();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -450,6 +617,12 @@ public final class PresentationProto {
 
         port_ = 0;
 
+        nextId_ = "";
+
+        nextAddress_ = "";
+
+        nextPort_ = 0;
+
         return this;
       }
 
@@ -479,6 +652,9 @@ public final class PresentationProto {
         result.id_ = id_;
         result.address_ = address_;
         result.port_ = port_;
+        result.nextId_ = nextId_;
+        result.nextAddress_ = nextAddress_;
+        result.nextPort_ = nextPort_;
         onBuilt();
         return result;
       }
@@ -537,6 +713,17 @@ public final class PresentationProto {
         }
         if (other.getPort() != 0) {
           setPort(other.getPort());
+        }
+        if (!other.getNextId().isEmpty()) {
+          nextId_ = other.nextId_;
+          onChanged();
+        }
+        if (!other.getNextAddress().isEmpty()) {
+          nextAddress_ = other.nextAddress_;
+          onChanged();
+        }
+        if (other.getNextPort() != 0) {
+          setNextPort(other.getNextPort());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -746,6 +933,189 @@ public final class PresentationProto {
       public Builder clearPort() {
         
         port_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object nextId_ = "";
+      /**
+       * <code>string nextId = 4;</code>
+       * @return The nextId.
+       */
+      public java.lang.String getNextId() {
+        java.lang.Object ref = nextId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          nextId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string nextId = 4;</code>
+       * @return The bytes for nextId.
+       */
+      public com.google.protobuf.ByteString
+          getNextIdBytes() {
+        java.lang.Object ref = nextId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          nextId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string nextId = 4;</code>
+       * @param value The nextId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNextId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        nextId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string nextId = 4;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearNextId() {
+        
+        nextId_ = getDefaultInstance().getNextId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string nextId = 4;</code>
+       * @param value The bytes for nextId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNextIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        nextId_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object nextAddress_ = "";
+      /**
+       * <code>string nextAddress = 5;</code>
+       * @return The nextAddress.
+       */
+      public java.lang.String getNextAddress() {
+        java.lang.Object ref = nextAddress_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          nextAddress_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string nextAddress = 5;</code>
+       * @return The bytes for nextAddress.
+       */
+      public com.google.protobuf.ByteString
+          getNextAddressBytes() {
+        java.lang.Object ref = nextAddress_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          nextAddress_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string nextAddress = 5;</code>
+       * @param value The nextAddress to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNextAddress(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        nextAddress_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string nextAddress = 5;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearNextAddress() {
+        
+        nextAddress_ = getDefaultInstance().getNextAddress();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string nextAddress = 5;</code>
+       * @param value The bytes for nextAddress to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNextAddressBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        nextAddress_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int nextPort_ ;
+      /**
+       * <code>int32 nextPort = 6;</code>
+       * @return The nextPort.
+       */
+      @java.lang.Override
+      public int getNextPort() {
+        return nextPort_;
+      }
+      /**
+       * <code>int32 nextPort = 6;</code>
+       * @param value The nextPort to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNextPort(int value) {
+        
+        nextPort_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 nextPort = 6;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearNextPort() {
+        
+        nextPort_ = 0;
         onChanged();
         return this;
       }
@@ -1389,13 +1759,15 @@ public final class PresentationProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\031presentationMessage.proto\"@\n\023Presentat" +
+      "\n\031presentationMessage.proto\"w\n\023Presentat" +
       "ionMessage\022\n\n\002id\030\001 \001(\t\022\017\n\007address\030\002 \001(\t\022" +
-      "\014\n\004port\030\003 \001(\005\"\"\n\017PresentationAck\022\017\n\007mess" +
-      "age\030\001 \001(\t2U\n\030ThermalPowerPlantService\0229\n" +
-      "\017PresentYourself\022\024.PresentationMessage\032\020" +
-      ".PresentationAckB+\n\026ThermalPowerPlant.gr" +
-      "pcB\021PresentationProtob\006proto3"
+      "\014\n\004port\030\003 \001(\005\022\016\n\006nextId\030\004 \001(\t\022\023\n\013nextAdd" +
+      "ress\030\005 \001(\t\022\020\n\010nextPort\030\006 \001(\005\"\"\n\017Presenta" +
+      "tionAck\022\017\n\007message\030\001 \001(\t2U\n\030ThermalPower" +
+      "PlantService\0229\n\017PresentYourself\022\024.Presen" +
+      "tationMessage\032\020.PresentationAckB+\n\026Therm" +
+      "alPowerPlant.grpcB\021PresentationProtob\006pr" +
+      "oto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -1406,7 +1778,7 @@ public final class PresentationProto {
     internal_static_PresentationMessage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_PresentationMessage_descriptor,
-        new java.lang.String[] { "Id", "Address", "Port", });
+        new java.lang.String[] { "Id", "Address", "Port", "NextId", "NextAddress", "NextPort", });
     internal_static_PresentationAck_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_PresentationAck_fieldAccessorTable = new

@@ -9,8 +9,16 @@ public class ThermalPowerPlant {
     private int port;
     private ThermalPowerPlant nextThermalPowerPlant; // ThermalPowerPlant Successiva
 
+    //Dati della successiva ThermalPowerPlant
+    private String nextId;
+    private String nextAddress;
+    private int nextPort;
+
+    //Singleton
+    private static ThermalPowerPlant instance;
+
     //Costruttore vuoto
-    public ThermalPowerPlant() {}
+    private ThermalPowerPlant() {}
 
     public ThermalPowerPlant(String id, String address, int port) {
         this.id = id;
@@ -26,6 +34,19 @@ public class ThermalPowerPlant {
         this.id = id;
         this.address = address;
         this.port = Integer.parseInt(port);
+    }
+
+    public static ThermalPowerPlant getInstance() {
+        if (instance == null) {
+            instance = new ThermalPowerPlant();
+        }
+        return instance;
+    }
+
+    public static void initialize(String id, String address, int port) {
+        if (instance == null) {
+            instance = new ThermalPowerPlant(id, address, port);
+        }
     }
 
     public String getId() { return id; }
@@ -48,12 +69,28 @@ public class ThermalPowerPlant {
         this.port = port;
     }
 
-    public void setNextThermalPowerPlant(ThermalPowerPlant nextThermalPowerPlant) {
-        this.nextThermalPowerPlant = nextThermalPowerPlant;
+    public String getNextId() {
+        return nextId;
     }
 
-    public ThermalPowerPlant getNextThermalPowerPlant() {
-        return nextThermalPowerPlant;
+    public void setNextId(String nextId) {
+        this.nextId = nextId;
+    }
+
+    public String getNextAddress() {
+        return nextAddress;
+    }
+
+    public void setNextAddress(String nextAddress) {
+        this.nextAddress = nextAddress;
+    }
+
+    public int getNextPort() {
+        return nextPort;
+    }
+
+    public void setNextPort(int nextPort) {
+        this.nextPort = nextPort;
     }
 
     @Override

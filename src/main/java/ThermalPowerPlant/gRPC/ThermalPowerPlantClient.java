@@ -29,13 +29,19 @@ public class ThermalPowerPlantClient {
      * @param id l'identificativo della ThermalPowerPlant
      * @param address l'indirizzo della ThermalPowerPlant --> localhost
      * @param port la porta sulla quale la ThermalPowerPlant è in ascolto
+     * @param nextId l'identificativo della successiva ThermalPowerPlant (=La successiva è la prima dell'anello)
+     * @param nextAddress l'indirizzo della successiva ThermalPowerPlant (=La successiva è la prima dell'anello)
+     * @param nextPort la porta sulla quale la successiva ThermalPowerPlant è in ascolto (=La successiva è la prima dell'anello)
      * @throws io.grpc.StatusRuntimeException se si verifica un errore durante la chiamata RPC
      */
-    public void sendPresentation(String id, String address, int port) {
+    public void sendPresentation(String id, String address, int port, String nextId, String nextAddress, int nextPort) {
         PresentationMessage request = PresentationMessage.newBuilder()
                 .setId(id)
                 .setAddress(address)
                 .setPort(port)
+                .setNextId(nextId)
+                .setNextAddress(nextAddress)
+                .setNextPort(nextPort)
                 .build();
 
         try {

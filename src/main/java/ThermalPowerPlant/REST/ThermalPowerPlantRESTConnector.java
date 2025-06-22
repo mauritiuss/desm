@@ -40,10 +40,10 @@ public class ThermalPowerPlantRESTConnector {
 
     /**
      * Questo metodo invia una richiesta POST al controller per aggiungere una nuova ThermalPowerPlant.
-     * @param thermalPowerPlant l'oggetto ThermalPowerPlant da aggiungere.
      * @return boolean true se la ThermalPowerPlant è stata aggiunta, false altrimenti.
      */
-    public boolean addThermalPowerPlant(ThermalPowerPlant thermalPowerPlant) {
+    public boolean addThermalPowerPlant() {
+        ThermalPowerPlant thermalPowerPlant = ThermalPowerPlant.getInstance();
         try{
             String url = RESTServerProperties.BASE_URL + "/add";
             ResponseEntity<Void> response = restTemplate.postForEntity(url, thermalPowerPlant, Void.class);

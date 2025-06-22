@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- 🔕 Disattiva tutto il logging di librerie esterne -->
+    <logger name="org.springframework" level="ERROR" />
+    <logger name="io.netty" level="ERROR" />
+    <logger name="org.eclipse.paho" level="ERROR" />
+
+    <!-- 🔇 Se vuoi essere ancora più aggressivo -->
+    <logger name="root" level="ERROR" />
+
+    <!-- 🔊 Solo errori stampati in console -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 💡 Root a livello ERROR: solo log d'errore -->
+    <root level="ERROR">
+        <appender-ref ref="CONSOLE" />
+    </root>
+</configuration>

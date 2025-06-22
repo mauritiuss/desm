@@ -14,16 +14,13 @@ import java.util.Random;
  */
 public class ThermalPowerPlantRunner extends Thread{
     private static final Random random = new Random();
-    private static ThermalPowerPlant thermalPowerPlant;
 
     public ThermalPowerPlantRunner() { ThermalPowerPlantRESTConnector.getInstance(); }
 
     public static void main(String[] args) {
 
         //1. Registrazione della ThermalPowerPlant --> REST
-        thermalPowerPlant = registerThermalPowerPlant();
-
-        if (thermalPowerPlant == null) { //Se non va a buon fine blocca tutto
+        if (!registerThermalPowerPlant()) { //Se non va a buon fine blocca tutto
             System.out.println(">>>[ThermalPowerPlantRunner] Impossibile registrare la ThermalPowerPlant.");
             System.exit(0);
         }else{ //Se va a buon fine
@@ -45,21 +42,13 @@ public class ThermalPowerPlantRunner extends Thread{
      * Registra una nuova ThermalPowerPlant generando ID, address e porta dinamica.
      * @return la ThermalPowerPlant se registrata correttamente, null altrimenti.
      */
-    private static ThermalPowerPlant registerThermalPowerPlant() {
+    private static boolean registerThermalPowerPlant() {
         String id = String.valueOf(random.nextInt(Integer.MAX_VALUE - 1) + 1); // id > 0
         String address = "localhost";
         int port = getFreePort();
-        ThermalPowerPlant plant = new ThermalPowerPlant(id, address, port);
+        ThermalPowerPlant.initialize(id, address, port);
 
-        boolean success = ThermalPowerPlantRESTConnector.getInstance().addThermalPowerPlant(plant);
-
-        if (success) {
-            System.out.println(">>>[ThermalPowerPlantRunner] Inserimento della ThermalPowerPlant avvenuto correttamente");
-            return plant;
-        } else {
-            System.out.println(">>>[ThermalPowerPlantRunner] Inserimento della ThermalPowerPlant fallito");
-            return null;
-        }
+        return ThermalPowerPlantRESTConnector.getInstance().addThermalPowerPlant();
     }
 
     /**

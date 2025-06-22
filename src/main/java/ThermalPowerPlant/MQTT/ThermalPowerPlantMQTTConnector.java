@@ -36,7 +36,7 @@ public class ThermalPowerPlantMQTTConnector extends MQTTConnector {
 
         // Simula decisione (50% di probabilità di accettare la richiesta)
         if (Math.random() < 0.5) {
-            System.out.println(">>>[ThermalPowerPlantMQTTConnector] Richiesta ACCETTATA da questa TPP: ");
+            System.out.println(">>>[ThermalPowerPlantMQTTConnector] Richiesta ACCETTATA da questa TPP");
             // Qui eventualmente potresti pubblicare una risposta o loggare
         } else {
             System.out.println(">>>[ThermalPowerPlantMQTTConnector] Richiesta IGNORATA da questa TPP");

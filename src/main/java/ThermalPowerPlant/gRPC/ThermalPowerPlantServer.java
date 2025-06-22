@@ -1,5 +1,6 @@
 package ThermalPowerPlant.gRPC;
 
+import ThermalPowerPlant.ThermalPowerPlant;
 import ThermalPowerPlant.grpc.PresentationProto;
 import ThermalPowerPlant.grpc.ThermalPowerPlantServiceGrpc;
 import io.grpc.Server;
@@ -72,12 +73,45 @@ public class ThermalPowerPlantServer {
         @Override
         public void presentYourself(PresentationProto.PresentationMessage request,
                                     StreamObserver<PresentationProto.PresentationAck> responseObserver) {
-            System.out.println("Ricevuto messaggio di presentazione da ThermalPowerPlant:");
-            System.out.println("ID: " + request.getId());
-            System.out.println("Address: " + request.getAddress());
-            System.out.println("Port: " + request.getPort());
 
-            // Risposta semplice
+            ThermalPowerPlant plant = ThermalPowerPlant.getInstance();
+
+            System.out.println(">>>[ThermalPowerPlantServer] ThermalPowerPlant: "+plant.toString()+", Ricevuto messaggio di presentazione da ThermalPowerPlant:" +request.getId()+
+                    ", "+request.getAddress()+", "+request.getPort());
+
+            //Caso: il messaggio è tornato al mittente → chiusura dell'anello
+            if(request.getId().equals(plant.getId())) {
+                System.out.println(">>>[ThermalPowerPlantServer] Il messaggio è tornato al mittente. Interrompo la catena.");
+            } else {
+                // Il messaggio proviene da un'altra ThermalPowerPlant → inoltro o aggiornamento
+                ThermalPowerPlantClient client = new ThermalPowerPlantClient(
+                        plant.getNextAddress(), plant.getNextPort()
+                );
+
+                if (request.getNextId().equals(plant.getNextId())) {
+                    // Sono l'ultimo dell'anello: aggiorno il riferimento al prossimo
+                    System.out.println(">>> [ThermalPowerPlantServer] Sono l'ultimo dell'anello. Aggiorno il next con chi si presenta.");
+
+                    plant.setNextId(request.getId());
+                    plant.setNextPort(request.getPort());
+                    plant.setPort(plant.getNextPort());
+
+                }
+
+                // Inoltro il messaggio al prossimo nodo
+                client.sendPresentation(
+                        request.getId(), // --> Id di chi si presenta
+                        request.getAddress(), // --> Address di chi si presenta
+                        request.getPort(), // --> Porta di chi si presenta
+                        request.getNextId(),
+                        request.getNextAddress(),
+                        request.getNextPort()
+                );
+
+                client.shutdown();
+            }
+
+            // Invio ack al chiamante
             PresentationProto.PresentationAck ack = PresentationProto.PresentationAck.newBuilder()
                     .setMessage("Presentazione ricevuta con successo da " + request.getId())
                     .build();
