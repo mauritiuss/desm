@@ -21,7 +21,7 @@ public class ThermalPowerPlantService {
      * @return una nuova lista contenente tutte le ThermalPowerPlant.
      */
     public synchronized List<ThermalPowerPlant> getThermalPowerPlantList() {
-        System.out.println(">>>[Serice] Ritorno di ThermalPowerPlantList\n");
+        System.out.println(">>>[Service] Ritorno di ThermalPowerPlantList\n");
         return new ArrayList<>(thermalPowerPlantList);
     }
 
@@ -44,13 +44,13 @@ public class ThermalPowerPlantService {
 
         for (ThermalPowerPlant p : thermalPowerPlantList) {
             if (p.getId() != null && p.getId().equalsIgnoreCase(newId)) {
-                System.out.println(">>>[Serice] ID già esistente: "+newId);
+                System.out.println(">>>[Service] ID già esistente: "+newId);
                 return false;
             }
         }
 
         thermalPowerPlantList.add(thermalPowerPlant);
-        System.out.println(">>>[Serice] Aggiunta ThermalPowerPlant con ID: " + newId+"\n");
+        System.out.println(">>>[Service] Aggiunta ThermalPowerPlant con ID: " + newId+"\n");
         return true;
     }
 
@@ -60,14 +60,14 @@ public class ThermalPowerPlantService {
      * @return l'oggetto ThermalPowerPlant se trovato, null altrimenti.
      */
     public synchronized ThermalPowerPlant getById(String id) {
-        System.out.println(">>>[Serice] Cercando di restituire la ThermalPowerPlant con ID: " + id);
+        System.out.println(">>>[Service] Cercando di restituire la ThermalPowerPlant con ID: " + id);
         for (ThermalPowerPlant thermalPowerPlant : thermalPowerPlantList) {
             if (thermalPowerPlant.getId() != null && thermalPowerPlant.getId().equalsIgnoreCase(id)) {
-                System.out.println(">>>[Serice] Ritorno della ThermalPowerPlant con ID: " + id);
+                System.out.println(">>>[Service] Ritorno della ThermalPowerPlant con ID: " + id);
                 return thermalPowerPlant;
             }
         }
-        System.out.println(">>>[Serice] Non è stata trovata nessuna ThermalPowerPlant con ID: " + id);
+        System.out.println(">>>[Service] Non è stata trovata nessuna ThermalPowerPlant con ID: " + id);
         return null; // Not found
     }
 
