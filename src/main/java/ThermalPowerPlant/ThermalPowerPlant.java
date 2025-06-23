@@ -10,12 +10,6 @@ public class ThermalPowerPlant {
     private String address;
     private int port;
 
-    /**
-     * Timestamp di creazione della ThermalPowerPlant
-     * Serve in caso due ThermalPowerPlant propongano lo stesso "prezzo"
-    */
-    private Timestamp timestamp;
-
     //Dati della successiva ThermalPowerPlant
     private String nextId;
     private String nextAddress;
@@ -31,7 +25,6 @@ public class ThermalPowerPlant {
         this.id = id;
         this.address = address;
         this.port = port;
-        this.timestamp = new Timestamp(System.currentTimeMillis());
     }
 
     //Costruttore a partire da un Json
