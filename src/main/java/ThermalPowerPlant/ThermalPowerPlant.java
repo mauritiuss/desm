@@ -2,8 +2,10 @@ package ThermalPowerPlant;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.sql.Timestamp;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 public class ThermalPowerPlant {
     private String id;
@@ -15,6 +17,16 @@ public class ThermalPowerPlant {
     private String nextAddress;
     private int nextPort;
 
+    //Flag per capire se la ThermalPowerPlant è occupata
+    private boolean busy = false;
+
+    /**
+     * Mappa per salvare le richieste e il prezzo proposto
+     * String --> Il timestamp della richiesta della RenewableEnergyProvider
+     * Double --> Il prezzo proposto dalla ThermalPowerplant
+     */
+    private Map<String, Double> prices;
+
     //Singleton
     private static ThermalPowerPlant instance;
 
@@ -25,6 +37,7 @@ public class ThermalPowerPlant {
         this.id = id;
         this.address = address;
         this.port = port;
+        this.prices = prices != null ? prices : new HashMap<>();
     }
 
     //Costruttore a partire da un Json
@@ -48,6 +61,35 @@ public class ThermalPowerPlant {
         if (instance == null) {
             instance = new ThermalPowerPlant(id, address, port);
         }
+    }
+
+    // Inizializzazione sicura della mappa
+    private Map<String, Double> getPricesMap() {
+        if (prices == null) {
+            prices = new HashMap<>();
+        }
+        return prices;
+    }
+
+    // Aggiunge o aggiorna un prezzo
+    public void addPrice(String key) {
+        getPricesMap().put(key, generateRandomPrice());
+    }
+
+    // Genera un numero casuale tra [0.1, 0.9] inclusi entrambi
+    public static double generateRandomPrice() {
+        double price = 0.1 + ThreadLocalRandom.current().nextDouble() * (0.9 - 0.1);
+        return Math.round(price * 1000.0) / 1000.0; // arrotondato a 3 decimali
+    }
+
+    // Ottiene un prezzo per chiave
+    public Double getPrice(String key) {
+        return getPricesMap().get(key);
+    }
+
+    // Verifica se una chiave esiste
+    public boolean hasPrice(String key) {
+        return getPricesMap().containsKey(key);
     }
 
     public String getId() { return id; }
@@ -92,6 +134,14 @@ public class ThermalPowerPlant {
 
     public void setNextPort(int nextPort) {
         this.nextPort = nextPort;
+    }
+
+    public boolean isBusy() {
+        return busy;
+    }
+
+    public void setBusy(boolean busy) {
+        this.busy = busy;
     }
 
     @Override

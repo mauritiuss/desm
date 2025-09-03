@@ -49,13 +49,13 @@ public class ThermalPowerPlantRESTConnector {
             ResponseEntity<Void> response = restTemplate.postForEntity(url, thermalPowerPlant, Void.class);
 
             if(response.getStatusCode().is2xxSuccessful()){
-                System.out.println(">>>[ThermalPowerPlantRESTConnector] ThermalPowerPlant inviata correttamente");
+                //System.out.println(">>>[ThermalPowerPlantRESTConnector] ThermalPowerPlant inviata correttamente");
                 return true;
             }else if (response.getStatusCode() == HttpStatus.CONFLICT) {
-                System.out.println(">>>[ThermalPowerPlantRESTConnector] ID già esistente: "+thermalPowerPlant.getId());
+                //System.out.println(">>>[ThermalPowerPlantRESTConnector] ID già esistente: "+thermalPowerPlant.getId());
                 return false;
             }else{
-                System.out.println(">>>[ThermalPowerPlantRESTConnector] Risposta inaspettata");
+                //System.out.println(">>>[ThermalPowerPlantRESTConnector] Risposta inaspettata");
                 return false;
             }
         }catch (HttpClientErrorException e) {

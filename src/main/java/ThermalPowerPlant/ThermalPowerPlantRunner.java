@@ -27,7 +27,7 @@ public class ThermalPowerPlantRunner extends Thread{
 
             //2. Crea un collegamento per la comunicazione gRPC
             new Thread(() -> {
-                new ThermalPowerPlantGRPCConnector();
+                ThermalPowerPlantGRPCConnector.getInstance();
             }).start();
 
             //3. Crea un collegamento per la comunicazione MQTT

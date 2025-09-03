@@ -33,7 +33,7 @@ public class ThermalPowerPlantController {
      */
     @GetMapping
     public ResponseEntity<List<ThermalPowerPlant>> getThermalPowerPlantList() {
-        System.out.println(">>>[Controller] getThermalPowerPlantList chiamato\n");
+        //System.out.println(">>>[ThermalPowerPlantController] getThermalPowerPlantList chiamato");
         return ResponseEntity.ok(thermalPowerPlantService.getThermalPowerPlantList());
     }
 
@@ -61,7 +61,7 @@ public class ThermalPowerPlantController {
     @GetMapping("/get/{id}")
     public ResponseEntity<ThermalPowerPlant> getById(@PathVariable String id) {
         ThermalPowerPlant thermalPowerPlant = thermalPowerPlantService.getById(id);
-        System.out.println(">>>[Controller] getById called with: " + id);
+        //System.out.println(">>>[ThermalPowerPlantController] getById called with: " + id);
         if (thermalPowerPlant != null)
             return ResponseEntity.ok(thermalPowerPlant);
         else

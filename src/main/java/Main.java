@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  * È importante aver fatto partire MOSQUITTO MQTT Broker prima di far partire questa classe.
  */
 public class Main {
-    private static final int WAIT_SECONDS = 60;
+    private static final int WAIT_SECONDS = 10;
     private static final int NUMBER_OF_THERMALPOWERPLANTS = 4;
 
 
@@ -36,11 +36,17 @@ public class Main {
         TimeUnit.SECONDS.sleep(WAIT_SECONDS);
          */
 
+        /**
         //3. Avvia 4 ThermalPowerPlant
         for (int i = 0; i < NUMBER_OF_THERMALPOWERPLANTS; i++) {
             processes.add(startJavaProcess("ThermalPowerPlant.ThermalPowerPlantRunner"));
             TimeUnit.SECONDS.sleep(WAIT_SECONDS);
         }
+        */
+
+        // Mantiene il main thread attivo fino a input manuale
+        System.out.println(">>>[Main] Premi INVIO per terminare i processi...");
+        System.in.read(); // Blocco finché l'utente non preme INVIO
 
     }
 
@@ -66,7 +72,7 @@ public class Main {
 
         builder.inheritIO(); // Mostra l'output nel terminale IntelliJ
         Process process = builder.start();
-        System.out.println(">>>[Main] Partito:" + className);
+        System.out.println("\n>>>[Main] Partito:" + className);
         return process;
     }
 

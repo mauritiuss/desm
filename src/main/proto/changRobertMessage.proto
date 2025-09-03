@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+option java_package = "ThermalPowerPlant.grpc";
+option java_outer_classname = "ChangRobertsProto";
+
+service ChangRobertsService {
+  rpc SendMessage(ChangRobertsMessage) returns (Ack);
+}
+
+message ChangRobertsMessage {
+
+  /**
+  * Il messaggio può essere di uno dei due seguenti tipi
+  * Election --> Durante la ricerca del miglior offerente
+  * Elected --> Notifica che è stato trovato il miglior offerente
+  */
+  oneof message_type{
+    Election election = 1;
+    Elected elected = 2;
+  }
+}
+
+message Election {
+  string timestamp = 1;
+  string candidateId = 2;
+  double price = 3;
+  int32 kwh = 4;
+}
+
+message Elected {
+  string timestamp = 1;
+  string winnerId = 2;
+  int32 kwh = 4;
+}
+
+message Ack{
+  string message = 1;
+}

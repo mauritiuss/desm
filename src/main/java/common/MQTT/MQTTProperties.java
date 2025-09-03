@@ -14,6 +14,6 @@ public abstract class MQTTProperties {
     public static final int QOS = 2;
 
     public static final String BASE_TOPIC = "thermal-power-plant";
-    public static final String ENERGY_REQUEST_TOPIC = BASE_TOPIC + "energy/requests";
+    public static final String ENERGY_REQUEST_TOPIC = BASE_TOPIC + "/energy/requests";
 
 }

@@ -17,10 +17,13 @@
   - Se non esiste un'altra ThermalPowerPlant con quell'ID:
       - AdministrationServer manda a ThermalPowerPlant l'elenco delle altre ThermalPowerPlant già presenti nella rete. ✅
       - Altrimenti AdministrationServer rifiuta la richiesta da parte della ThermalPowerPlant ✅
-- Comunicazione tra ThermalPowerPlant tramite GRPc
-- Algoritmo di elezione distribuito e decentralizzato 
+- Comunicazione tra ThermalPowerPlant tramite GRPc ✅
+- Algoritmo di elezione distribuito e decentralizzato ✅
 
 ## 3° STEP
 ### Raccolta dei dati del sensore
 - Implementazione della raccolta dei dati dei sensori
 - Calcolo del lato del server statistico
+
+## 4° STEP
+### Uscita controllata di una Thermal Power Plant

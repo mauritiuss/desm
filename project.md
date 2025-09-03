@@ -137,3 +137,19 @@ Se sono necessarie comunicazioni broadcast, queste devono essere eseguite in par
 Il broker MQTT su cui si basa DESM è Mosquitto e si presume che sia online al seguente indirizzo: tcp://localhost:1883. 
 Il fornitore di energia rinnovabile utilizza questo broker per pubblicare la richiesta di energia. 
 Il Broker viene utilizzato anche dalla Thermal Power Plant per pubblicare le misurazioni dei sensori di inquinamento.
+
+# 10 Parti opzionali
+## 10.1 Prima parte opzionale: lasciare la rete
+Per questa parte opzionale, devi anche considerare la possibilità che una centrale termica lasci la rete. 
+Puoi presumere che ogni processo dell'impianto termini solo in modo controllato, il che significa che l'impianto esce esplicitamente dalla rete. 
+Un impianto può lasciare la rete in una qualsiasi delle fasi descritte nella Sezione 2, inserendo il comando "exit" nella riga di comando del processo. 
+Quando si lascia la rete, il processo dell'impianto deve seguire questi passaggi: 
+- Avvisare le altre centrali termiche. 
+- Richiedere al server amministratore di lasciare la rete. 
+
+Si noti che quando un impianto riceve la comunicazione dell'uscita di un'altra centrale, deve gestirla di conseguenza.
+
+## 10.2 Seconda parte opzionale: uscita incontrollata
+Per la seconda parte opzionale, non puoi più presumere che ogni processo di centrale termica termini solo in modo controllato. 
+Quindi, tutti i meccanismi di sincronizzazione distribuita implementati per il progetto devono tenere conto del fatto che un impianto potrebbe lasciare il sistema in modo incontrollato (ad es. Senza la possibilità di notificare il fornitore, il server o altri impianti).
+

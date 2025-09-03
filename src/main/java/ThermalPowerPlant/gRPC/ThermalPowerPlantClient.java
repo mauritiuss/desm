@@ -1,16 +1,21 @@
 package ThermalPowerPlant.gRPC;
 
+import ThermalPowerPlant.grpc.ChangRobertsProto;
+import ThermalPowerPlant.grpc.ChangRobertsServiceGrpc;
 import ThermalPowerPlant.grpc.ThermalPowerPlantServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import ThermalPowerPlant.grpc.PresentationProto.PresentationAck;
 import ThermalPowerPlant.grpc.PresentationProto.PresentationMessage;
 
+import javax.annotation.Nullable;
+
 
 public class ThermalPowerPlantClient {
 
     private final ManagedChannel channel;
     private final ThermalPowerPlantServiceGrpc.ThermalPowerPlantServiceBlockingStub blockingStub;
+    private final ChangRobertsServiceGrpc.ChangRobertsServiceBlockingStub changRobertsBlockingStub;
 
     /**
      * Costruisce un client gRPC per connettersi a un server.
@@ -22,6 +27,7 @@ public class ThermalPowerPlantClient {
                 .usePlaintext() // gRPC senza TLS
                 .build();
         blockingStub = ThermalPowerPlantServiceGrpc.newBlockingStub(channel);
+        changRobertsBlockingStub = ChangRobertsServiceGrpc.newBlockingStub(channel);
     }
 
     /**
@@ -46,9 +52,87 @@ public class ThermalPowerPlantClient {
 
         try {
             PresentationAck response = blockingStub.presentYourself(request);
-            System.out.println("Risposta dal server: " + response.getMessage());
+            //System.out.println(">>>[ThermalPowerPlantClient] Risposta dal server al messaggio Presentation: " + response.getMessage());
         } catch (Exception e) {
-            System.err.println("Errore durante l'invio del messaggio gRPC: " + e.getMessage());
+            System.err.println(">>>[ThermalPowerPlantClient] Errore durante l'invio del messaggio Presentation gRPC: " + e.getMessage());
+
+        }
+    }
+
+    /**
+     * Invia un messaggio di tipo Election o Elected al nodo successivo tramite gRPC.
+     * @param isElection true se il messaggio è di tipo Election, false se è di tipo Elected
+     * @param timestamp identificativo della richiesta
+     * @param candidateId id del candidato (usato solo per Election)
+     * @param price prezzo offerto (usato solo per Election)
+     * @param kwh sono i kwh richiesti dalla RenewableEnergyProvider
+     * @param winnerId id del vincitore (usato solo per Elected)
+     * @throws io.grpc.StatusRuntimeException se si verifica un errore durante la chiamata RPC
+     */
+    public void sendChangRobertsMessage(boolean isElection, String timestamp, @Nullable String candidateId, @Nullable Double price, int kwh, @Nullable String winnerId){
+
+        ChangRobertsProto.ChangRobertsMessage message;
+
+        /*
+        if(isElection){
+            ChangRobertsProto.Election election = ChangRobertsProto.Election.newBuilder()
+                    .setTimestamp(timestamp)
+                    .setCandidateId(candidateId)
+                    .setPrice(price)
+                    .setKwh(kwh)
+                    .build();
+
+            message = ChangRobertsProto.ChangRobertsMessage.newBuilder()
+                    .setElection(election)
+                    .build();
+        } else {
+            ChangRobertsProto.Elected elected = ChangRobertsProto.Elected.newBuilder()
+                    .setTimestamp(timestamp)
+                    .setWinnerId(winnerId)
+                    .setKwh(kwh)
+                    .build();
+
+            message = ChangRobertsProto.ChangRobertsMessage.newBuilder()
+                    .setElected(elected)
+                    .build();
+        }
+        */
+
+        if(isElection){
+            ChangRobertsProto.Election.Builder electionBuilder = ChangRobertsProto.Election.newBuilder();
+            //timestamp è obbligatorio -> fallback a stringa vuota
+            electionBuilder.setTimestamp(timestamp != null ? timestamp : "");
+            //candidateId è obbligatorio -> fallback a stringa vuota
+            electionBuilder.setCandidateId(candidateId != null ? candidateId : "");
+            //price è opzionale -> set solo se non null
+            if (price != null) {
+                electionBuilder.setPrice(price);
+            }
+            //kwh è primitivo, quindi non può essere null
+            electionBuilder.setKwh(kwh);
+
+            System.out.println(">>>[ThermalPowerPlantClient] IsElection: "+timestamp+", candidateId: "+candidateId+", price: "+price);
+            message = ChangRobertsProto.ChangRobertsMessage.newBuilder()
+                    .setElection(electionBuilder.build())
+                    .build();
+
+        } else {
+            ChangRobertsProto.Elected.Builder electedBuilder = ChangRobertsProto.Elected.newBuilder();
+            electedBuilder.setTimestamp(timestamp != null ? timestamp : "");
+            electedBuilder.setWinnerId(winnerId != null ? winnerId : "");
+            electedBuilder.setKwh(kwh);
+
+            System.out.println(">>>[ThermalPowerPlantClient] IsElected: "+timestamp+", winnerId: "+winnerId+", kwh: "+kwh);
+            message = ChangRobertsProto.ChangRobertsMessage.newBuilder()
+                    .setElected(electedBuilder.build())
+                    .build();
+        }
+
+        try {
+            ChangRobertsProto.Ack response = changRobertsBlockingStub.sendMessage(message);
+            System.out.println(">>>[ThermalPowerPlantClient] Risposta dal server al messaggio ChangRoberts: " + response.getMessage());
+        } catch (Exception e) {
+            System.err.println(">>>[ThermalPowerPlantClient] Errore durante l'invio del messaggio ChangRoberts gRPC : " + e.getMessage());
         }
     }
 

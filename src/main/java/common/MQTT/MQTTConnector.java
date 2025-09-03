@@ -1,5 +1,6 @@
 package common.MQTT;
 
+import ThermalPowerPlant.ThermalPowerPlantRunner;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
@@ -35,7 +36,7 @@ public abstract class MQTTConnector implements MqttCallbackExtended {
             System.exit(0);
         }
 
-        System.out.println(">>>[MQTTConnector] Connessione con MQTT broker avvenuta");
+        System.out.println(">>>[MQTTConnector] "+ ThermalPowerPlant.ThermalPowerPlant.getInstance().getId() + " Connessione con MQTT broker avvenuta");
     }
 
     /**
@@ -73,15 +74,21 @@ public abstract class MQTTConnector implements MqttCallbackExtended {
     @Override
     public void connectComplete(boolean reconnect, String serverURI){
         if (reconnect) {
-            System.out.println(">>>[MQTTConnector] Riconnessione al MQTT broker avvenuta");
+            System.out.println(">>>[MQTTConnector] "+ ThermalPowerPlant.ThermalPowerPlant.getInstance().getId() + " Riconnessione al MQTT broker avvenuta");
         }else{
-            System.out.println(">>>[MQTTConnector] Connessione al MQTT broker avvenuta");
+            System.out.println(">>>[MQTTConnector] "+ ThermalPowerPlant.ThermalPowerPlant.getInstance().getId() + " Connessione al MQTT broker avvenuta");
         }
     }
 
     @Override
     public void connectionLost(Throwable cause){
-        System.out.println(">>>[MQTTConnector] Connessione con MQTT broker persa");
+        System.out.println(">>>[MQTTConnector] Connessione persa: " + cause.getMessage());
+        if (cause instanceof MqttException) {
+            MqttException me = (MqttException) cause;
+            System.out.println(">>>[MQTTConnector] Reason code: " + me.getReasonCode());
+            System.out.println(">>>[MQTTConnector] Inner cause: " + me.getCause());
+            me.printStackTrace();
+        }
     }
 
     @Override
