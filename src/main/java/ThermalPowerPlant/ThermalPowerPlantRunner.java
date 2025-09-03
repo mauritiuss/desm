@@ -25,12 +25,17 @@ public class ThermalPowerPlantRunner extends Thread{
             System.exit(0);
         }else{ //Se va a buon fine
 
-            //2. Crea un collegamento per la comunicazione gRPC
+            //2. Inizia ad acquisire dati dal sensore di inquinamento
+            new Thread(() -> {
+
+            }).start();
+
+            //3. Crea un collegamento per la comunicazione gRPC
             new Thread(() -> {
                 ThermalPowerPlantGRPCConnector.getInstance();
             }).start();
 
-            //3. Crea un collegamento per la comunicazione MQTT
+            //4. Crea un collegamento per la comunicazione MQTT
             new Thread(() -> {
                 new ThermalPowerPlantMQTTConnector();
             }).start();
