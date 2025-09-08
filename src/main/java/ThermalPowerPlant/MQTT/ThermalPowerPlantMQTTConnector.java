@@ -34,7 +34,6 @@ public class ThermalPowerPlantMQTTConnector extends MQTTConnector {
         startCo2Publisher();
     }
 
-
     /**
      * Callback invocata quando un messaggio MQTT viene ricevuto sul topic sottoscritto.
      * Il messaggio viene ricevuto MQTT ma la comunicazione tra ThermalPowerPlant avviene tramite GRPC.
