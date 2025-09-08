@@ -35,8 +35,6 @@ public abstract class MQTTConnector implements MqttCallbackExtended {
             System.out.println(">>>[MQTTConnector] Errore creando il client MQTT: " + e.getMessage());
             System.exit(0);
         }
-
-        System.out.println(">>>[MQTTConnector] "+ ThermalPowerPlant.ThermalPowerPlant.getInstance().getId() + " Connessione con MQTT broker avvenuta");
     }
 
     /**
@@ -67,6 +65,22 @@ public abstract class MQTTConnector implements MqttCallbackExtended {
         }
     }
 
+    /**
+     * Pubblica un messaggio su un argomento dato
+     * @param topic l'argomento su cui verrà pubblicato il messaggio
+     * @param payload il messaggio da pubblicare
+     */
+    public void publishNonRetained(String topic, String payload) {
+        try {
+            MqttMessage msg = new MqttMessage(payload.getBytes());
+            msg.setQos(MQTTProperties.QOS);
+            msg.setRetained(false);
+            client.publish(topic, msg);
+        } catch (MqttException e) {
+            System.out.println(">>>[MQTTConnector] Errore publishNonRetained: " + e.getMessage());
+        }
+    }
+
 
     /**
      * Metodi generati automaticamente
@@ -76,7 +90,11 @@ public abstract class MQTTConnector implements MqttCallbackExtended {
         if (reconnect) {
             System.out.println(">>>[MQTTConnector] "+ ThermalPowerPlant.ThermalPowerPlant.getInstance().getId() + " Riconnessione al MQTT broker avvenuta");
         }else{
-            System.out.println(">>>[MQTTConnector] "+ ThermalPowerPlant.ThermalPowerPlant.getInstance().getId() + " Connessione al MQTT broker avvenuta");
+            if (ThermalPowerPlant.ThermalPowerPlant.getInstance().getId() == null){
+                System.out.println(">>>[MQTTConnector] RenewableEnergyProvider connessione al MQTT broker avvenuta");
+            }else{
+                System.out.println(">>>[MQTTConnector] "+ ThermalPowerPlant.ThermalPowerPlant.getInstance().getId() + " Connessione al MQTT broker avvenuta");
+            }
         }
     }
 

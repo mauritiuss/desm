@@ -56,4 +56,38 @@ public class ClientMenu implements DisplayableMenu {
             }
         }
     }
+
+    private long readControlledLong() {
+        while (true) {
+            if (scanner.hasNextLong()) {
+                return scanner.nextLong();
+            } else {
+                scanner.next();
+                System.out.println("Inserisci un numero long valido (millisecondi).");
+            }
+        }
+    }
+
+    @Override
+    public void displayAverageBetweenTimestamp(){
+        System.out.println("Inserisci t1 (timestamp in millisecondi): ");
+        long t1 = readControlledLong();
+
+        System.out.println("Inserisci t2 (timestamp in millisecondi): ");
+        long t2 = readControlledLong();
+
+        try{
+            Double avg = AdministrationClientRESTConnector.getInstance().getAverageBetweenTimestamp(t1, t2);
+
+            if(avg == null){
+                System.out.println("Nessuna misura trovata nell'intervallo [" + t1 + ", " + t2 + "].");
+            } else {
+                System.out.println("Media valori nell'intervallo [" + t1 + ", " + t2 + "]: " + avg);
+            }
+        } catch (IllegalArgumentException e){
+            System.out.println("Input non valido: t1 deve essere minore o uguale a t2.");
+        } catch (Exception e){
+            System.out.println("Errore durante la richiesta: " + e.getMessage());
+        }
+    }
 }

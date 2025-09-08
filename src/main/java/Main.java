@@ -1,6 +1,3 @@
-import AdministrationServer.AdministrationServer;
-import ThermalPowerPlant.ThermalPowerPlantRunner;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +24,7 @@ public class Main {
         registerShutdownHook(processes);
 
         //1. Avvia l'AdministrationServer
-        processes.add(startJavaProcess("AdministrationServer.AdministrationServer"));
+        processes.add(startJavaProcess("AdministrationServer.AdministrationServerRunner"));
         TimeUnit.SECONDS.sleep(3);
 
         /**

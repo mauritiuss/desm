@@ -17,6 +17,8 @@ public class AdministrationClient {
                     break;
                 case 2:
                     //TODO: mostrare la media dei livelli di emissione di CO₂
+                    menu.displayAverageBetweenTimestamp();
+
                     break;
                 default:
                     System.out.println("Scelta non valida");

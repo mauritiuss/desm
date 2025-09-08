@@ -1,11 +1,17 @@
 package ThermalPowerPlant.MQTT;
 
+import Simulator.Measurement;
 import ThermalPowerPlant.ThermalPowerPlant;
 import ThermalPowerPlant.gRPC.ThermalPowerPlantGRPCConnector;
 import common.MQTT.MQTTConnector;
 import common.MQTT.MQTTProperties;
+import common.model.Co2AveragesPacket;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 /**
  * Questa classe è l'MQTTConnector per la ThermalPowerPlant
@@ -23,6 +29,9 @@ public class ThermalPowerPlantMQTTConnector extends MQTTConnector {
         }catch (MqttException e){
             System.out.println(">>>[ThermalPowerPlantMQTTConnector] Errore nella sottoscrizione: "+e.getMessage());
         }
+
+        //Avvio del publisher delle medie co2
+        startCo2Publisher();
     }
 
 
@@ -97,4 +106,84 @@ public class ThermalPowerPlantMQTTConnector extends MQTTConnector {
             return -1; // oppure lancia eccezione, a seconda dei tuoi requisiti
         }
     }
+
+
+    //Metodi per i dati dell'inquinamento
+    private boolean stopPublisher = false;
+    private Thread publisherThread;
+
+    // Avvia il thread che invia i pacchetti di medie CO2 non appena disponibili
+    private synchronized void startCo2Publisher() {
+        if (publisherThread != null && publisherThread.isAlive()) return;
+
+        publisherThread = new Thread(() -> {
+            System.out.println(">>>[ThermalPowerPlantMQTTConnector] Publisher CO2 avviato.");
+            while (!stopPublisher) {
+                try{
+                    ThermalPowerPlant plant = ThermalPowerPlant.getInstance();
+                    if(plant == null || plant.getAveragesScheduler() == null){
+                        Thread.sleep(1000);
+                        continue;
+                    }
+
+                    //Prendo i pacchetti accumulati nello scheduler (creati ogni 10s)
+                    List<Co2AveragesPacket> packets = plant.getAveragesScheduler().fetchAndClearPendingPackets();
+
+                    if(packets != null && !packets.isEmpty()){
+                        for (Co2AveragesPacket packet : packets) {
+                            String plantId = packet.getThermalPowerPlantId();
+                            String topic = MQTTProperties.co2AveragesTopicFor(plantId); //--> Per pubblicare sul topic dedicato
+                            String payload = toJson(packet);
+                            publishNonRetained(topic, payload);
+                            System.out.println(">>>[ThermalPowerPlantMQTTConnector] Pubblicato packet CO2: " + payload);
+                        }
+                    }
+
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                }catch (Exception e){
+                    System.out.println(">>>[ThermalPowerPlantMQTTConnector] Errore publisher: " + e.getMessage());
+                    e.printStackTrace();
+                    try { Thread.sleep(1000); } catch (InterruptedException ignored) {}
+                }
+            }
+            System.out.println(">>>[ThermalPowerPlantMQTTConnector] Publisher CO2 terminato");
+        }, "Co2AveragesPublisher");
+        publisherThread.setDaemon(true);
+        publisherThread.start();
+    }
+
+    // Ferma il publisher
+    public synchronized void stopCo2Publisher() {
+        stopPublisher = true;
+        if (publisherThread != null) publisherThread.interrupt();
+    }
+
+    // Serializza un Co2AveragesPacket in JSON
+    private String toJson(Co2AveragesPacket packet) {
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+        String formattedTs = now.format(formatter);
+
+        // Lista medie come stringa compatta
+        StringBuilder averagesJson = new StringBuilder("[");
+        List<Measurement> list = packet.getAverages();
+        for (int i = 0; i < list.size(); i++) {
+            Measurement m = list.get(i);
+            averagesJson.append(String.format(
+                    "{\"sensorId\": \"%s\", \"type\": \"%s\", \"value\": %.2f, \"timestamp\": %d}",
+                    m.getId(), m.getType(), m.getValue(), m.getTimestamp()
+            ));
+            if (i < list.size() - 1) averagesJson.append(",");
+        }
+        averagesJson.append("]");
+
+        // Payload finale
+        return String.format(
+                "{\"plantId\": \"%s\", \"timestamp\": \"%s\", \"averages\": %s}",
+                packet.getThermalPowerPlantId(), formattedTs, averagesJson.toString()
+        );
+    }
+
+
 }

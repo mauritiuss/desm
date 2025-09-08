@@ -16,4 +16,15 @@ public abstract class MQTTProperties {
     public static final String BASE_TOPIC = "thermal-power-plant";
     public static final String ENERGY_REQUEST_TOPIC = BASE_TOPIC + "/energy/requests";
 
+    public static final String CO2_AVERAGES_TOPIC = BASE_TOPIC + "/+/co2/averages";
+
+    /**
+     * Costruisce il topic MQTT per la pubblicazione delle medie di CO2 relative a una specifica ThermalPowerPlant.
+     * @param plantId l'identificativo univoco della ThermalPowerPlant. Se nullo o vuoto, verrà usato "unknown"
+     * @return la stringa del topic MQTT specifico per quella centrale
+     */
+    public static String co2AveragesTopicFor(String plantId) {
+        if (plantId == null || plantId.isEmpty()) plantId = "unknown";
+        return BASE_TOPIC + "/" + plantId + "/co2/averages";
+    }
 }

@@ -1,5 +1,7 @@
 package ThermalPowerPlant;
 
+import Simulator.Buffer;
+import Simulator.SlidingWindowBuffer;
 import ThermalPowerPlant.MQTT.ThermalPowerPlantMQTTConnector;
 import ThermalPowerPlant.REST.ThermalPowerPlantRESTConnector;
 import ThermalPowerPlant.gRPC.ThermalPowerPlantGRPCConnector;
@@ -12,7 +14,7 @@ import java.util.Random;
 /**
  * Questa classe è usata per far partire una ThermalPowerPlant
  */
-public class ThermalPowerPlantRunner extends Thread{
+public class ThermalPowerPlantRunner{
     private static final Random random = new Random();
 
     public ThermalPowerPlantRunner() { ThermalPowerPlantRESTConnector.getInstance(); }
@@ -21,13 +23,21 @@ public class ThermalPowerPlantRunner extends Thread{
 
         //1. Registrazione della ThermalPowerPlant --> REST
         if (!registerThermalPowerPlant()) { //Se non va a buon fine blocca tutto
-            System.out.println(">>>[ThermalPowerPlantRunner] Impossibile registrare la ThermalPowerPlant.");
+            System.out.println(">>>[ThermalPowerPlantRunner] Impossibile registrare la ThermalPowerPlant");
             System.exit(0);
         }else{ //Se va a buon fine
 
             //2. Inizia ad acquisire dati dal sensore di inquinamento
             new Thread(() -> {
-
+                try{
+                    Buffer buffer = new SlidingWindowBuffer();
+                    ThermalPowerPlant.getInstance().initPollutionMonitoring(buffer);
+                    ThermalPowerPlant.getInstance().startAveragesScheduler();
+                    System.out.println(">>>[ThermalPowerPlantRunner] Sensore CO2 e scheduler avviati.");
+                }catch (Exception e){
+                    System.out.println(">>>[ThermalPowerPlantRunner] Errore avvio sensore/scheduler: " + e.getMessage());
+                    e.printStackTrace();
+                }
             }).start();
 
             //3. Crea un collegamento per la comunicazione gRPC

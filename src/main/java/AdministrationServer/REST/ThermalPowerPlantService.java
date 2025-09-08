@@ -1,5 +1,6 @@
 package AdministrationServer.REST;
 
+import AdministrationServer.AdministrationServer;
 import ThermalPowerPlant.ThermalPowerPlant;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
@@ -69,6 +70,18 @@ public class ThermalPowerPlantService {
         }
         System.out.println(">>>[ThermalPowerPlantService] Non è stata trovata nessuna ThermalPowerPlant con ID: " + id);
         return null; // Not found
+    }
+
+    /**
+     * Calcola la media tra due timestamp delegando all'AdministrationServer.
+     * @param t1 timestamp iniziale (ms)
+     * @param t2 timestamp finale (ms)
+     * @return Double con la media se presente, altrimenti null
+     * @throws IllegalArgumentException se t1 > t2
+     */
+    public synchronized Double getAverageBetweenTimestamp(long t1, long t2) {
+        double avg = AdministrationServer.getInstance().getAverageBetweenTimestamp(t1, t2);
+        return Double.isNaN(avg) ? null : avg;
     }
 
 

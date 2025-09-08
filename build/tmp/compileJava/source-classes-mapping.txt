@@ -1,5 +1,9 @@
 AdministrationServer/REST/RESTServerProperties.java
  AdministrationServer.REST.RESTServerProperties
+ThermalPowerPlant/Co2AveragesScheduler.java
+ ThermalPowerPlant.Co2AveragesScheduler
+Simulator/SlidingWindowBuffer.java
+ Simulator.SlidingWindowBuffer
 Simulator/Buffer.java
  Simulator.Buffer
 common/MQTT/MQTTProperties.java
@@ -10,8 +14,8 @@ AdministrationServer/REST/ThermalPowerPlantService.java
  AdministrationServer.REST.ThermalPowerPlantService
 common/MQTT/MQTTConnector.java
  common.MQTT.MQTTConnector
-AdministrationServer/REST/ThermalPowerPlantController.java
- AdministrationServer.REST.ThermalPowerPlantController
+ThermalPowerPlant/REST/ThermalPowerPlantRESTConnector.java
+ ThermalPowerPlant.REST.ThermalPowerPlantRESTConnector
 ThermalPowerPlant/gRPC/ThermalPowerPlantGRPCConnector.java
  ThermalPowerPlant.gRPC.ThermalPowerPlantGRPCConnector
 Main.java
@@ -73,10 +77,16 @@ AdministrationClient/DisplayableMenu.java
  AdministrationClient.DisplayableMenu
 Simulator/Simulator.java
  Simulator.Simulator
+AdministrationServer/MQTT/AdministrationServerMQTTConnector.java
+ AdministrationServer.MQTT.AdministrationServerMQTTConnector
 AdministrationServer/AdministrationServer.java
  AdministrationServer.AdministrationServer
 AdministrationClient/ClientMenu.java
  AdministrationClient.ClientMenu
+AdministrationServer/AdministrationServerRunner.java
+ AdministrationServer.AdministrationServerRunner
+Simulator/PollutionSensor.java
+ Simulator.PollutionSensor
 ThermalPowerPlant/grpc/ChangRobertsServiceGrpc.java
  ThermalPowerPlant.grpc.ChangRobertsServiceGrpc
  ThermalPowerPlant.grpc.ChangRobertsServiceGrpc$1
@@ -90,15 +100,17 @@ ThermalPowerPlant/grpc/ChangRobertsServiceGrpc.java
  ThermalPowerPlant.grpc.ChangRobertsServiceGrpc$MethodHandlers
 ThermalPowerPlant/gRPC/ThermalPowerPlantClient.java
  ThermalPowerPlant.gRPC.ThermalPowerPlantClient
-Simulator/PollutionSensor.java
- Simulator.PollutionSensor
 ThermalPowerPlant/ThermalPowerPlant.java
  ThermalPowerPlant.ThermalPowerPlant
+common/model/Co2AveragesPacket.java
+ common.model.Co2AveragesPacket
 AdministrationClient/REST/AdministrationClientRESTConnector.java
  AdministrationClient.REST.AdministrationClientRESTConnector
+Simulator/BufferProperties.java
+ Simulator.BufferProperties
 Simulator/Measurement.java
  Simulator.Measurement
 AdministrationClient/AdministrationClient.java
  AdministrationClient.AdministrationClient
-ThermalPowerPlant/REST/ThermalPowerPlantRESTConnector.java
- ThermalPowerPlant.REST.ThermalPowerPlantRESTConnector
+AdministrationServer/REST/ThermalPowerPlantController.java
+ AdministrationServer.REST.ThermalPowerPlantController

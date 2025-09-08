@@ -1,5 +1,7 @@
 package ThermalPowerPlant;
 
+import Simulator.Buffer;
+import Simulator.PollutionSensor;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.concurrent.ThreadLocalRandom;
@@ -19,6 +21,11 @@ public class ThermalPowerPlant {
 
     //Flag per capire se la ThermalPowerPlant è occupata
     private boolean busy = false;
+
+    //Cambi per i dati dell'inquinamento
+    private Buffer pollutionBuffer;
+    private PollutionSensor pollutionSensor;
+    private Co2AveragesScheduler averagesScheduler;
 
     /**
      * Mappa per salvare le richieste e il prezzo proposto
@@ -50,6 +57,7 @@ public class ThermalPowerPlant {
         this.port = Integer.parseInt(port);
     }
 
+    // Singleton
     public static ThermalPowerPlant getInstance() {
         if (instance == null) {
             instance = new ThermalPowerPlant();
@@ -152,4 +160,47 @@ public class ThermalPowerPlant {
                 ", port=" + port +
                 '}';
     }
+
+
+    //Metodi per i dati dell'inquinamento
+    //Inizializza e avvia il sensore di inquinamento usando il buffer dato.
+    public synchronized void initPollutionMonitoring(Buffer buffer){
+        if(buffer == null) throw new IllegalArgumentException("Buffer nullo");
+        if(this.pollutionSensor != null && this.pollutionSensor.isAlive()) return;
+
+        this.pollutionBuffer = buffer;
+        this.pollutionSensor = new PollutionSensor(buffer);
+        this.pollutionSensor.start();
+    }
+
+    //Ritorna il buffer del sensore di inquinamento (può servire per leggere le medie).
+    public Buffer getPollutionBuffer() {
+        return pollutionBuffer;
+    }
+
+    //Stop del simulatore
+    public synchronized void stopPollutionMonitoring() {
+        if(this.pollutionSensor != null){
+            this.pollutionSensor.stopMeGently();
+            this.pollutionSensor = null;
+        }
+    }
+
+    public synchronized void startAveragesScheduler() {
+        if (this.averagesScheduler != null && this.averagesScheduler.isAlive()) return;
+        this.averagesScheduler = new Co2AveragesScheduler(this);
+        this.averagesScheduler.start();
+    }
+
+    public synchronized void stopAveragesScheduler() {
+        if (this.averagesScheduler != null) {
+            this.averagesScheduler.stopMeGently();
+            this.averagesScheduler = null;
+        }
+    }
+
+    public Co2AveragesScheduler getAveragesScheduler() {
+        return averagesScheduler;
+    }
+
 }

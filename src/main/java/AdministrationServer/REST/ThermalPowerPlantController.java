@@ -69,5 +69,18 @@ public class ThermalPowerPlantController {
     }
 
 
+    @GetMapping("/average")
+    public ResponseEntity<Double> getAverageBetweenTimestamp(@RequestParam("t1") long t1, @RequestParam("t2") long t2) {
+        try{
+            Double avg = thermalPowerPlantService.getAverageBetweenTimestamp(t1, t2);
+            if(avg == null){
+                return ResponseEntity.noContent().build(); // 204 No Content
+            }
+            return ResponseEntity.ok(avg); //200
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.badRequest().build(); //400
+        }
+    }
+
 }
 
