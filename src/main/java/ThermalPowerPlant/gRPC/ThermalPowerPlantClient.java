@@ -2,6 +2,9 @@ package ThermalPowerPlant.gRPC;
 
 import ThermalPowerPlant.grpc.ChangRobertsProto;
 import ThermalPowerPlant.grpc.ChangRobertsServiceGrpc;
+import ThermalPowerPlant.grpc.ExitProto.ExitMessage;
+import ThermalPowerPlant.grpc.ExitProto.ExitAck;
+import ThermalPowerPlant.grpc.ExitServiceGrpc;
 import ThermalPowerPlant.grpc.ThermalPowerPlantServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -16,6 +19,7 @@ public class ThermalPowerPlantClient {
     private final ManagedChannel channel;
     private final ThermalPowerPlantServiceGrpc.ThermalPowerPlantServiceBlockingStub blockingStub;
     private final ChangRobertsServiceGrpc.ChangRobertsServiceBlockingStub changRobertsBlockingStub;
+    private final ExitServiceGrpc.ExitServiceBlockingStub exitBlockingStub;
 
     /**
      * Costruisce un client gRPC per connettersi a un server.
@@ -28,6 +32,7 @@ public class ThermalPowerPlantClient {
                 .build();
         blockingStub = ThermalPowerPlantServiceGrpc.newBlockingStub(channel);
         changRobertsBlockingStub = ChangRobertsServiceGrpc.newBlockingStub(channel);
+        exitBlockingStub = ExitServiceGrpc.newBlockingStub(channel);
     }
 
     /**
@@ -133,6 +138,33 @@ public class ThermalPowerPlantClient {
             System.out.println(">>>[ThermalPowerPlantClient] Risposta dal server al messaggio ChangRoberts: " + response.getMessage());
         } catch (Exception e) {
             System.err.println(">>>[ThermalPowerPlantClient] Errore durante l'invio del messaggio ChangRoberts gRPC : " + e.getMessage());
+        }
+    }
+
+    /**
+     * Invia un messaggio di 'exit' al nodo successivo tramite gRPC.
+     * @param id identificativo della ThermalPowerPlant che vuole uscire
+     * @param address address della ThermalPowerPlant che vuole uscire --> localhost
+     * @param port port della ThermalPowerPlant che vuole uscire
+     * @param nextId l'identificativo della successiva ThermalPowerPlant
+     * @param nextAddress l'indirizzo della successiva ThermalPowerPlant
+     * @param nextPort la porta sulla quale la successiva ThermalPowerPlant è in ascolto
+     * @throws io.grpc.StatusRuntimeException se si verifica un errore durante la chiamata RPC
+     */
+    public void sendExitMessage(String id, String address, int port, String nextId, String nextAddress, int nextPort) {
+        ExitMessage message = ExitMessage.newBuilder()
+                .setExitingId(id)
+                .setExitingAddress(address)
+                .setExitingPort(port)
+                .setExitingNextId(nextId)
+                .setExitingNextAddress(nextAddress)
+                .setExitingNextPort(nextPort)
+                .build();
+
+        try{
+            ExitAck response = exitBlockingStub.sendMessage(message);
+        } catch (Exception e) {
+            System.err.println(">>>[ThermalPowerPlantClient] Errore durante l'invio del messaggio exit gRPC: " + e.getMessage());
         }
     }
 

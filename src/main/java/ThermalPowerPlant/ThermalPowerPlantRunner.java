@@ -9,6 +9,8 @@ import ThermalPowerPlant.gRPC.ThermalPowerPlantGRPCConnector;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.Random;
+import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 /**
@@ -19,6 +21,9 @@ public class ThermalPowerPlantRunner{
 
     public ThermalPowerPlantRunner() { ThermalPowerPlantRESTConnector.getInstance(); }
 
+    // riferimento al connettore MQTT, utile per shutdown
+    private static final AtomicReference<ThermalPowerPlantMQTTConnector> MQTT_REF = new AtomicReference<>();
+
     public static void main(String[] args) {
 
         //1. Registrazione della ThermalPowerPlant --> REST
@@ -28,6 +33,7 @@ public class ThermalPowerPlantRunner{
         }else{ //Se va a buon fine
 
             //2. Inizia ad acquisire dati dal sensore di inquinamento
+            // Sensore + scheduler
             new Thread(() -> {
                 try{
                     Buffer buffer = new SlidingWindowBuffer();
@@ -38,17 +44,23 @@ public class ThermalPowerPlantRunner{
                     System.out.println(">>>[ThermalPowerPlantRunner] Errore avvio sensore/scheduler: " + e.getMessage());
                     e.printStackTrace();
                 }
-            }).start();
+            }, "Starter-Sensor-Scheduler").start();
 
             //3. Crea un collegamento per la comunicazione gRPC
+            // gRPC
             new Thread(() -> {
                 ThermalPowerPlantGRPCConnector.getInstance();
-            }).start();
+            }, "Starter-gRPC").start();
 
             //4. Crea un collegamento per la comunicazione MQTT
+            // MQTT
             new Thread(() -> {
-                new ThermalPowerPlantMQTTConnector();
-            }).start();
+                ThermalPowerPlantMQTTConnector connector = new ThermalPowerPlantMQTTConnector();
+                MQTT_REF.set(connector);
+            }, "Starter-MQTT").start();
+
+            //5. Console listener per il comando di exit
+            startConsoleExitListener();
         }
 
     }
@@ -77,6 +89,76 @@ public class ThermalPowerPlantRunner{
         }catch (IOException e){
             throw new RuntimeException(">>>[ThermalPowerPlantRunner] Nessuna porta disponibile, errore: "+e);
         }
+    }
+
+    /**
+     * Avvia un thread in background che legge dalla console.
+     * Quando l’utente digita 'exit', inizia la procedura di uscita.
+     */
+    private static void startConsoleExitListener() {
+        Thread t = new Thread(() -> {
+            System.out.println(">>>[ThermalPowerPlantRunner] Digita 'exit' per uscire dalla rete in modo controllato");
+            try(Scanner scanner = new Scanner(System.in)){
+                while(true){
+                    if(!scanner.hasNextLine()) break;
+                    String line = scanner.nextLine();
+                    if(line!= null && "exit".equalsIgnoreCase(line.trim())){
+                        onExitRequested();
+                        break;
+                    }
+                }
+            } catch (Exception e){
+                System.out.println(">>>[ThermalPowerPlantRunner] Errore nel listener della console: "+e.getMessage());
+                e.printStackTrace();
+            }
+        }, "ConsoleExitListener");
+        t.setDaemon(true);
+        t.start();
+    }
+
+    /**
+     * Hook chiamato quando viene richiesto l'uscita (comando 'exit').
+     * In questo step stampa soltanto un log; nei prossimi step effettuerà:
+     * - notifica agli altri impianti via gRPC,
+     * - deregistrazione dal server REST,
+     * - shutdown di sensore, scheduler, MQTT, gRPC.
+     */
+    private static void onExitRequested() {
+        System.out.println(">>>[ThermalPowerPlantRunner] Comando di exit ricevuto. Avvio procedura di uscita...");
+
+        // Uscita tramite gRPC
+        try{
+            ThermalPowerPlantGRPCConnector.getInstance().leaveRing();
+        }catch (Exception e){
+            System.out.println(">>>[ThermalPowerPlantRunner] Errore leaveRing: " + e.getMessage());
+        }
+
+        // Deregistrazione dal server REST
+        try{
+            boolean ok = ThermalPowerPlantRESTConnector.getInstance().removeThermalPowerPlant();
+            System.out.println(">>>[ThermalPowerPlantRunner] Deregistrazione dal server REST: "+ok);
+        }catch (Exception e){
+            System.out.println(">>>[ThermalPowerPlantRunner] Errore deregistrazione dal server REST: " + e.getMessage());
+        }
+
+
+        // Shutdown locale del sensore, scheduler, MQTT
+        try{
+            ThermalPowerPlant.getInstance().stopAveragesScheduler();
+            ThermalPowerPlant.getInstance().stopPollutionMonitoring();
+
+            ThermalPowerPlantMQTTConnector connector = MQTT_REF.get();
+            if (connector != null) {
+                connector.stopCo2Publisher();
+                connector.disconnect();
+            }
+        }catch (Exception e){
+            System.out.println(">>>[ThermalPowerPlantRunner] Errore shutdown locale: " + e.getMessage());
+        }
+
+        System.out.println(">>>[ThermalPowerPlantRunner] Uscita completata.");
+        System.exit(0);
+
     }
 
 

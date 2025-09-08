@@ -84,5 +84,17 @@ public class ThermalPowerPlantService {
         return Double.isNaN(avg) ? null : avg;
     }
 
+    public synchronized boolean removeThermalPowerPlant(String id) {
+        for (ThermalPowerPlant thermalPowerPlant : thermalPowerPlantList) {
+            if( thermalPowerPlant.getId() != null && thermalPowerPlant.getId().equalsIgnoreCase(id)) {
+                thermalPowerPlantList.remove(thermalPowerPlant);
+                System.out.println(">>>[ThermalPowerPlantService] Rimossa ThermalPowerPlant con ID: " + id);
+                return true;
+            }
+        }
+        System.out.println(">>>[ThermalPowerPlantService] Nessuna ThermalPowerPlant con ID: " + id);
+        return false;
+    }
+
 
 }

@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+option java_package = "ThermalPowerPlant.grpc";
+option java_outer_classname = "ExitProto";
+
+service ExitService {
+  rpc SendMessage(ExitMessage) returns (ExitAck);
+}
+
+message ExitMessage {
+  //Dati di chi vuole uscire
+  string exitingId = 1;
+  string exitingAddress = 2;
+  int32 exitingPort = 3;
+
+  //Dati del next di chi vuole uscire
+  string exitingNextId = 4;
+  string exitingNextAddress = 5;
+  int32 exitingNextPort = 6;
+}
+
+message ExitAck {
+  string message = 1;
+}

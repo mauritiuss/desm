@@ -43,6 +43,7 @@ public class Co2AveragesScheduler extends Thread{
         return out;
     }
 
+    @Override
     public void run(){
         while(!stop){
             try{
@@ -61,18 +62,28 @@ public class Co2AveragesScheduler extends Thread{
                     pendingPackets.add(packet);
                 }
 
-                System.out.println(">>>[Co2AveragesScheduler] Pacchetto creato alle " + ts + " con " + averages.size() + " medie:");
-                for (Measurement m : averages) {
-                    System.out.println("   -> Media: " + m.getValue() + " g, timestamp: " + m.getTimestamp());
-                }
+                //printMeasurements(averages, ts);
 
                 System.out.println(">>>[Co2AveragesScheduler] Creato packet: " + packet);
+
+                Thread.sleep(10_000); // In modo da pubblicare un pacchetto ogni 10 secondi
+
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Thread.currentThread().interrupt();
+                break;
             } catch (Exception e){
                 System.out.println(">>>[Co2AveragesScheduler] Errore: " + e.getMessage());
-                e.printStackTrace();
+                Thread.currentThread().interrupt();
+                break;
             }
+        }
+        System.out.println(">>>[Co2AveragesScheduler] Terminato.");
+    }
+
+    private void printMeasurements(List<Measurement> averages, long ts) {
+        System.out.println(">>>[Co2AveragesScheduler] Pacchetto creato alle " + ts + " con " + averages.size() + " medie:");
+        for (Measurement m : averages) {
+            System.out.println("   -> Media: " + m.getValue() + " g, timestamp: " + m.getTimestamp());
         }
     }
 }

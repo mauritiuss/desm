@@ -68,7 +68,6 @@ public class ThermalPowerPlantController {
             return ResponseEntity.notFound().build();
     }
 
-
     @GetMapping("/average")
     public ResponseEntity<Double> getAverageBetweenTimestamp(@RequestParam("t1") long t1, @RequestParam("t2") long t2) {
         try{
@@ -82,5 +81,11 @@ public class ThermalPowerPlantController {
         }
     }
 
+    @DeleteMapping("/remove/{id}")
+    public ResponseEntity<Void> removeThermalPowerPlant(@PathVariable String id) {
+        return thermalPowerPlantService.removeThermalPowerPlant(id)
+                ? ResponseEntity.ok().build()
+                : ResponseEntity.notFound().build();
+    }
 }
 

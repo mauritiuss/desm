@@ -30,12 +30,13 @@ public class SlidingWindowBuffer implements Buffer{
         //Se la finestra è piena, calcolo media e avanzo
         if(window.size() == WINDOW_SIZE) {
             double sum = 0.0;
-            System.out.println(">>>[SlidingWindowBuffer] Calcolo media su finestra:");
-            //Stampa dei valori
+
+
             for (Measurement measurement : window) {
                 sum += measurement.getValue();
-                System.out.println("   -> Valore: " + measurement.getValue() + " g, timestamp: " + measurement.getTimestamp());
             }
+
+            //printValue(window);
 
             double avg = sum / WINDOW_SIZE;
 
@@ -59,6 +60,13 @@ public class SlidingWindowBuffer implements Buffer{
             while(window.size() > WINDOW_SIZE) {
                 window.remove(0);
             }
+        }
+    }
+
+    private void printValue(List<Measurement> window) {
+        System.out.println(">>>[SlidingWindowBuffer] Calcolo media su finestra:");
+        for (Measurement measurement : window) {
+            System.out.println("   -> Valore: " + measurement.getValue() + " g, timestamp: " + measurement.getTimestamp());
         }
     }
 

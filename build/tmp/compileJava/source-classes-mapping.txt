@@ -14,8 +14,19 @@ AdministrationServer/REST/ThermalPowerPlantService.java
  AdministrationServer.REST.ThermalPowerPlantService
 common/MQTT/MQTTConnector.java
  common.MQTT.MQTTConnector
-ThermalPowerPlant/REST/ThermalPowerPlantRESTConnector.java
- ThermalPowerPlant.REST.ThermalPowerPlantRESTConnector
+AdministrationServer/REST/ThermalPowerPlantController.java
+ AdministrationServer.REST.ThermalPowerPlantController
+ThermalPowerPlant/grpc/ExitProto.java
+ ThermalPowerPlant.grpc.ExitProto
+ ThermalPowerPlant.grpc.ExitProto$1
+ ThermalPowerPlant.grpc.ExitProto$ExitAck
+ ThermalPowerPlant.grpc.ExitProto$ExitAck$1
+ ThermalPowerPlant.grpc.ExitProto$ExitAck$Builder
+ ThermalPowerPlant.grpc.ExitProto$ExitAckOrBuilder
+ ThermalPowerPlant.grpc.ExitProto$ExitMessage
+ ThermalPowerPlant.grpc.ExitProto$ExitMessage$1
+ ThermalPowerPlant.grpc.ExitProto$ExitMessage$Builder
+ ThermalPowerPlant.grpc.ExitProto$ExitMessageOrBuilder
 ThermalPowerPlant/gRPC/ThermalPowerPlantGRPCConnector.java
  ThermalPowerPlant.gRPC.ThermalPowerPlantGRPCConnector
 Main.java
@@ -26,6 +37,7 @@ ThermalPowerPlant/gRPC/ThermalPowerPlantServer.java
  ThermalPowerPlant.gRPC.ThermalPowerPlantServer
  ThermalPowerPlant.gRPC.ThermalPowerPlantServer$1
  ThermalPowerPlant.gRPC.ThermalPowerPlantServer$ChangRobertsServiceImpl
+ ThermalPowerPlant.gRPC.ThermalPowerPlantServer$ExitServiceImpl
  ThermalPowerPlant.gRPC.ThermalPowerPlantServer$ThermalPowerPlantServiceImpl
 ThermalPowerPlant/grpc/ThermalPowerPlantServiceGrpc.java
  ThermalPowerPlant.grpc.ThermalPowerPlantServiceGrpc
@@ -112,5 +124,16 @@ Simulator/Measurement.java
  Simulator.Measurement
 AdministrationClient/AdministrationClient.java
  AdministrationClient.AdministrationClient
-AdministrationServer/REST/ThermalPowerPlantController.java
- AdministrationServer.REST.ThermalPowerPlantController
+ThermalPowerPlant/grpc/ExitServiceGrpc.java
+ ThermalPowerPlant.grpc.ExitServiceGrpc
+ ThermalPowerPlant.grpc.ExitServiceGrpc$1
+ ThermalPowerPlant.grpc.ExitServiceGrpc$ExitServiceBaseDescriptorSupplier
+ ThermalPowerPlant.grpc.ExitServiceGrpc$ExitServiceBlockingStub
+ ThermalPowerPlant.grpc.ExitServiceGrpc$ExitServiceFileDescriptorSupplier
+ ThermalPowerPlant.grpc.ExitServiceGrpc$ExitServiceFutureStub
+ ThermalPowerPlant.grpc.ExitServiceGrpc$ExitServiceImplBase
+ ThermalPowerPlant.grpc.ExitServiceGrpc$ExitServiceMethodDescriptorSupplier
+ ThermalPowerPlant.grpc.ExitServiceGrpc$ExitServiceStub
+ ThermalPowerPlant.grpc.ExitServiceGrpc$MethodHandlers
+ThermalPowerPlant/REST/ThermalPowerPlantRESTConnector.java
+ ThermalPowerPlant.REST.ThermalPowerPlantRESTConnector

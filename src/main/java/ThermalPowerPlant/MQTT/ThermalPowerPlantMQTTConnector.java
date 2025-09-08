@@ -48,8 +48,6 @@ public class ThermalPowerPlantMQTTConnector extends MQTTConnector {
 
         ThermalPowerPlant plant = ThermalPowerPlant.getInstance();
 
-        //TODO generare valore + far partire elezione
-
         //La ThermalPowerPlant propone il valore soltanto se non è occupata
         if(!plant.isBusy()){
             String timestamp = extractionTimestamp(payload);
@@ -118,7 +116,7 @@ public class ThermalPowerPlantMQTTConnector extends MQTTConnector {
 
         publisherThread = new Thread(() -> {
             System.out.println(">>>[ThermalPowerPlantMQTTConnector] Publisher CO2 avviato.");
-            while (!stopPublisher) {
+            while (!stopPublisher && !Thread.currentThread().isInterrupted()) {
                 try{
                     ThermalPowerPlant plant = ThermalPowerPlant.getInstance();
                     if(plant == null || plant.getAveragesScheduler() == null){
@@ -137,14 +135,20 @@ public class ThermalPowerPlantMQTTConnector extends MQTTConnector {
                             publishNonRetained(topic, payload);
                             System.out.println(">>>[ThermalPowerPlantMQTTConnector] Pubblicato packet CO2: " + payload);
                         }
+                    }else{
+                        Thread.sleep(500);
                     }
-
                 }catch (InterruptedException e){
-                    e.printStackTrace();
+                    Thread.currentThread().interrupt();
+                    break;
                 }catch (Exception e){
                     System.out.println(">>>[ThermalPowerPlantMQTTConnector] Errore publisher: " + e.getMessage());
-                    e.printStackTrace();
-                    try { Thread.sleep(1000); } catch (InterruptedException ignored) {}
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException ignored) {
+                        Thread.currentThread().interrupt();
+                        break;
+                    }
                 }
             }
             System.out.println(">>>[ThermalPowerPlantMQTTConnector] Publisher CO2 terminato");
@@ -156,7 +160,10 @@ public class ThermalPowerPlantMQTTConnector extends MQTTConnector {
     // Ferma il publisher
     public synchronized void stopCo2Publisher() {
         stopPublisher = true;
-        if (publisherThread != null) publisherThread.interrupt();
+        if (publisherThread != null) {
+            publisherThread.interrupt();
+            Thread.currentThread().interrupt();
+        }
     }
 
     // Serializza un Co2AveragesPacket in JSON

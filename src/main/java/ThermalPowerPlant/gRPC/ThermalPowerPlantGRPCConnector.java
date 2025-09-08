@@ -119,6 +119,31 @@ public class ThermalPowerPlantGRPCConnector {
 
     }
 
+
+    public void leaveRing(){
+        ThermalPowerPlant plant = ThermalPowerPlant.getInstance();
+
+        //Se sono da solo nell'anello, non serve propagare
+        if(isAloneInRing()) {
+            System.out.println(">>>[ThermalPowerPlantGRPCConnector] Solo nell'anello, nessuna propagazione necessaria");
+            return;
+        }
+
+        ThermalPowerPlantClient client = new ThermalPowerPlantClient(plant.getNextAddress(), plant.getNextPort());
+
+        client.sendExitMessage(
+                plant.getId(),
+                plant.getAddress(),
+                plant.getPort(),
+                plant.getNextId(),
+                plant.getNextAddress(),
+                plant.getNextPort()
+        );
+        client.shutdown();
+
+        System.out.println(">>>[ThermalPowerPlantGRPCConnector] ExitMessage inviato da: "+plant.getId()+" al next: "+plant.getNextId());
+    }
+
     /**
      * Verifica se questo nodo è l'unico presente nell'anello.
      * @return true se il nodo è da solo nell'anello, false altrimenti

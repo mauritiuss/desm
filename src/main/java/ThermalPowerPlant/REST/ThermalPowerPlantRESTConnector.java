@@ -37,7 +37,6 @@ public class ThermalPowerPlantRESTConnector {
      */
     private static void initializeConnection() { instance = new ThermalPowerPlantRESTConnector(); }
 
-
     /**
      * Questo metodo invia una richiesta POST al controller per aggiungere una nuova ThermalPowerPlant.
      * @return boolean true se la ThermalPowerPlant è stata aggiunta, false altrimenti.
@@ -85,6 +84,21 @@ public class ThermalPowerPlantRESTConnector {
         } catch (Exception e) {
             System.err.println("Errore durante la richiesta al server: " + e.getMessage());
             return new ThermalPowerPlant[0];
+        }
+    }
+
+    public boolean removeThermalPowerPlant(){
+        ThermalPowerPlant plant = ThermalPowerPlant.getInstance();
+        try{
+            String url = RESTServerProperties.BASE_URL + "/remove/" + plant.getId();
+            restTemplate.delete(url);
+            return true;
+        } catch (HttpClientErrorException.NotFound e) {
+            System.out.println(">>>[ThermalPowerPlantRESTConnector] ID non trovato sul server: " + e.getMessage());
+            return false;
+        } catch (Exception e) {
+            System.out.println(">>>[ThermalPowerPlantRESTConnector] Errore durante la rimozione: " + e.getMessage());
+            return false;
         }
     }
 

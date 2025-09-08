@@ -1,15 +1,11 @@
 package ThermalPowerPlant.gRPC;
 
 import ThermalPowerPlant.ThermalPowerPlant;
-import ThermalPowerPlant.grpc.ChangRobertsProto;
-import ThermalPowerPlant.grpc.ChangRobertsServiceGrpc;
-import ThermalPowerPlant.grpc.PresentationProto;
-import ThermalPowerPlant.grpc.ThermalPowerPlantServiceGrpc;
+import ThermalPowerPlant.grpc.*;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
 import java.io.IOException;
-import java.security.Timestamp;
 
 public class ThermalPowerPlantServer {
 
@@ -33,6 +29,7 @@ public class ThermalPowerPlantServer {
         server = ServerBuilder.forPort(port)
                 .addService(new ThermalPowerPlantServiceImpl())
                 .addService(new ChangRobertsServiceImpl())
+                .addService(new ExitServiceImpl())
                 .build()
                 .start();
         System.out.println(">>>[ThermalPowerPlantServer] "+ ThermalPowerPlant.getInstance().getId() + " Server gRPC avviato sulla porta " + port);
@@ -69,14 +66,8 @@ public class ThermalPowerPlantServer {
      */
     private static class ThermalPowerPlantServiceImpl extends ThermalPowerPlantServiceGrpc.ThermalPowerPlantServiceImplBase {
 
-        /**
-         * Gestisce la richiesta `presentYourself` da parte di una ThermalPowerPlant.
-         * @param request la richiesta contenente ID, indirizzo e porta della ThermalPowerPlant
-         * @param responseObserver l'osservatore usato per inviare la risposta al client
-         */
         @Override
-        public void presentYourself(PresentationProto.PresentationMessage request,
-                                    StreamObserver<PresentationProto.PresentationAck> responseObserver) {
+        public void presentYourself(PresentationProto.PresentationMessage request, StreamObserver<PresentationProto.PresentationAck> responseObserver) {
 
             ThermalPowerPlant plant = ThermalPowerPlant.getInstance();
 
@@ -128,6 +119,7 @@ public class ThermalPowerPlantServer {
             responseObserver.onNext(ack);
             responseObserver.onCompleted();
         }
+
     }
 
     /**
@@ -246,18 +238,81 @@ public class ThermalPowerPlantServer {
             } else {
                 try {
                     plant.setBusy(true);
-                    Thread.sleep(120_000); // 180.000 millisecondi = 3 minuto
+
+                    int energyKwh = elected.getKwh();
+                    long productionTimeMs = (long) energyKwh; // 1 ms per kWh richiesto
+
+                    System.out.println(">>>[ChangRoberts] " + plant.getId() + " ha vinto l'elezione. Produzione di " + energyKwh + " kWh → attendo " + productionTimeMs + " ms...");
+
+                    Thread.sleep(productionTimeMs);
+
+                    System.out.println(">>>[ChangRoberts] " + plant.getId() + " ha terminato la produzione di " + energyKwh + " kWh");
                     plant.setBusy(false);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
 
-
-                //TODO Bloccare la thermal power plant
-
             }
         }
 
+    }
+
+    /**
+     * Implementazione concreta del servizio `ExitService` definito nel file `.proto`.
+     * Gestisce la logica della chiamata RPC `SendMessage`, utilizzata per uscire dalla rete.
+     */
+    private static class ExitServiceImpl extends ExitServiceGrpc.ExitServiceImplBase {
+
+        @Override
+        public void sendMessage(ExitProto.ExitMessage request, StreamObserver<ExitProto.ExitAck> responseObserver){
+            String exitingId = request.getExitingId();
+            String exitingNextId = request.getExitingNextId();
+            String exitingNextAddress = request.getExitingNextAddress();
+            int exitingNextPort = request.getExitingNextPort();
+
+            ThermalPowerPlant plant = ThermalPowerPlant.getInstance();
+
+            //Se il mio next è la thermalPowerPlant che esce --> Aggiorno il mio next
+            if(exitingId.equals(plant.getNextId())) {
+                plant.setNextId(exitingNextId);
+                plant.setNextAddress(exitingNextAddress);
+                plant.setNextPort(exitingNextPort);
+                System.out.println(">>>[ThermalPowerPlantServer] Aggiornato il next: ora punto a " + plant.getNextId());
+            }
+
+            //Condizioni di stop propagazione
+            boolean backToExiting = plant.getId().equals(exitingId); //Se il messaggio è tornato al mittente --> Giro completato
+            boolean singleNode = plant.getNextId() != null && plant.getNextId().equals(plant.getId()); //Anello di un nodo singolo
+
+            //Se non è tornato al mittente e se non c'è un solo nodo nell'anello allora inoltro al prossimo
+            if(!backToExiting && !singleNode){
+                ThermalPowerPlantClient client = new ThermalPowerPlantClient(plant.getNextAddress(), plant.getNextPort());
+
+                // Inoltro il messaggio al prossimo nodo
+                client.sendExitMessage(
+                        request.getExitingId(),
+                        request.getExitingAddress(),
+                        request.getExitingPort(),
+                        request.getExitingNextId(),
+                        request.getExitingNextAddress(),
+                        request.getExitingNextPort()
+                );
+
+                client.shutdown();
+            } else {
+                if(backToExiting) System.out.println(">>>[ThermalPowerPlantServer] Messaggio di Exit ritornato al mittente.");
+                if(singleNode) System.out.println(">>>[ThermalPowerPlantServer] Anello degenerato ad un solo nodo. Stop inoltro.");
+            }
+
+            // Invio ack al chiamante
+            ExitProto.ExitAck ack = ExitProto.ExitAck.newBuilder()
+                    .setMessage("Presentazione ricevuta con successo da " + request.getExitingId())
+                    .build();
+
+            responseObserver.onNext(ack);
+            responseObserver.onCompleted();
+
+        }
     }
 
 
