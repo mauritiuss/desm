@@ -62,13 +62,13 @@ public class AdministrationServer {
      * Stampa lo stato corrente dello storage su console.
      */
     public synchronized void printStorage() {
-        i("AdministrationServer", "Contenuto dello storage:");
+        i("AdministrationServer", "CO2", "Contenuto dello storage:");
         for (Map.Entry<String, List<Measurement>> entry : storage.entrySet()) {
             String plantId = entry.getKey();
             List<Measurement> measurements = entry.getValue();
-            i("AdministrationServer", "   PlantId = " + plantId);
+            i("AdministrationServer", "CO2","   PlantId = " + plantId);
             for (Measurement m : measurements) {
-                i("AdministrationServer", "      - " + m.toString());
+                i("AdministrationServer", "CO2","      - " + m.toString());
             }
         }
     }

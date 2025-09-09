@@ -11,7 +11,6 @@ public class SlidingWindowBuffer implements Buffer{
     private final List<Measurement> window = new ArrayList<>(WINDOW_SIZE);
     private final List<Measurement> readyAvarages = new ArrayList<>();
 
-
     /**
      * Aggiunge una nuova misurazione al buffer.
      * Quando la finestra raggiunge WINDOW_SIZE misurazioni, viene calcolata la media dei valori e memorizzata in readyAverages.
@@ -50,7 +49,10 @@ public class SlidingWindowBuffer implements Buffer{
 
             readyAvarages.add(new Measurement(id, avgType, avg, ts));
 
-            i("SlidingWindowBuffer"," Media calcolata: " + avg + " g (su " + WINDOW_SIZE + " valori)\n");
+            i("SlidingWindowBuffer","CO2"," Media calcolata: " + avg + " g (su " + WINDOW_SIZE + " valori)\n");
+
+            //Notifica i consumatori che potrebbero essere in wait()
+            this.notifyAll();
 
             //Avanzo la finestra di STEP (50%)
             for (int i =0; i < STEP && !window.isEmpty(); i++) {
@@ -64,9 +66,9 @@ public class SlidingWindowBuffer implements Buffer{
     }
 
     private void printValue(List<Measurement> window) {
-        i("SlidingWindowBuffer"," Calcolo media su finestra:");
+        i("SlidingWindowBuffer","CO2"," Calcolo media su finestra:");
         for (Measurement measurement : window) {
-            i("SlidingWindowBuffer","   -> Valore: " + measurement.getValue() + " g, timestamp: " + measurement.getTimestamp());
+            i("SlidingWindowBuffer","CO2","   -> Valore: " + measurement.getValue() + " g, timestamp: " + measurement.getTimestamp());
         }
     }
 

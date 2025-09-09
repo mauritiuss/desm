@@ -25,9 +25,9 @@ public class ThermalPowerPlantMQTTConnector extends MQTTConnector {
 
         try{
             client.subscribe(MQTTProperties.ENERGY_REQUEST_TOPIC, MQTTProperties.QOS);
-            i("ThermalPowerPlantMQTTConnector",""+ ThermalPowerPlant.getInstance().getId() + " Iscritto al topic: " + MQTTProperties.ENERGY_REQUEST_TOPIC+"\n");
+            i("ThermalPowerPlantMQTTConnector","OTHER",""+ ThermalPowerPlant.getInstance().getId() + " Iscritto al topic: " + MQTTProperties.ENERGY_REQUEST_TOPIC+"\n");
         }catch (MqttException e){
-            e("ThermalPowerPlantMQTTConnector","Errore nella sottoscrizione: "+e.getMessage());
+            e("ThermalPowerPlantMQTTConnector","OTHER","Errore nella sottoscrizione: "+e.getMessage());
         }
 
         //Avvio del publisher delle medie co2
@@ -43,7 +43,7 @@ public class ThermalPowerPlantMQTTConnector extends MQTTConnector {
     @Override
     public void messageArrived(String topic, MqttMessage message){
         String payload = new String(message.getPayload());
-        i("ThermalPowerPlantMQTTConnector","Richiesta di energia ricevuta per il topic: " + topic+": "+payload);
+        i("ThermalPowerPlantMQTTConnector","OTHER","Richiesta di energia ricevuta per il topic: " + topic+": "+payload);
 
         ThermalPowerPlant plant = ThermalPowerPlant.getInstance();
 
@@ -114,7 +114,7 @@ public class ThermalPowerPlantMQTTConnector extends MQTTConnector {
         if (publisherThread != null && publisherThread.isAlive()) return;
 
         publisherThread = new Thread(() -> {
-            i("ThermalPowerPlantMQTTConnector","Publisher CO2 avviato.");
+            i("ThermalPowerPlantMQTTConnector","CO2","Publisher CO2 avviato.");
             while (!stopPublisher && !Thread.currentThread().isInterrupted()) {
                 try{
                     ThermalPowerPlant plant = ThermalPowerPlant.getInstance();
@@ -132,7 +132,7 @@ public class ThermalPowerPlantMQTTConnector extends MQTTConnector {
                             String topic = MQTTProperties.co2AveragesTopicFor(plantId); //--> Per pubblicare sul topic dedicato
                             String payload = toJson(packet);
                             publishNonRetained(topic, payload);
-                            i("ThermalPowerPlantMQTTConnector","Pubblicato packet CO2: " + payload);
+                            i("ThermalPowerPlantMQTTConnector","CO2","Pubblicato packet CO2 su MQTT: " + payload);
                         }
                     }else{
                         Thread.sleep(500);
@@ -141,7 +141,7 @@ public class ThermalPowerPlantMQTTConnector extends MQTTConnector {
                     Thread.currentThread().interrupt();
                     break;
                 }catch (Exception e){
-                    e("ThermalPowerPlantMQTTConnector","Errore publisher: " + e.getMessage());
+                    e("ThermalPowerPlantMQTTConnector","CO2","Errore publisher: " + e.getMessage());
                     try {
                         Thread.sleep(500);
                     } catch (InterruptedException ignored) {
@@ -150,7 +150,7 @@ public class ThermalPowerPlantMQTTConnector extends MQTTConnector {
                     }
                 }
             }
-            i("ThermalPowerPlantMQTTConnector","Publisher CO2 terminato");
+            i("ThermalPowerPlantMQTTConnector","CO2","Publisher CO2 terminato");
         }, "Co2AveragesPublisher");
         publisherThread.setDaemon(true);
         publisherThread.start();

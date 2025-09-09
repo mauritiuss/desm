@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class Co2AveragesScheduler extends Thread{
 
-    private static final long PERIOD_IN_MS = 10_000L;
+    private static final long PERIOD_IN_MS = 10_000L; // Ogni 10 secondi al massimo
     private boolean stop = false;
 
     // Coda dei pacchetti generati e non ancora inviati
@@ -47,13 +47,22 @@ public class Co2AveragesScheduler extends Thread{
     public void run(){
         while(!stop){
             try{
-                Thread.sleep(PERIOD_IN_MS);
                 Buffer buffer = thermalPowerPlant.getPollutionBuffer();
-                if(buffer == null)  continue;
+                if(buffer == null){
+                    Thread.sleep(PERIOD_IN_MS);
+                    continue;
+                }
+
+                //Attende nuove medie o il timeout di 10s (produttore chiama notifyAll() quando aggiunge una media)
+                synchronized (buffer){
+                    buffer.wait(PERIOD_IN_MS);
+                }
 
                 // Legge le medie pronte dal buffer (può essere lista vuota)
                 List<Measurement> averages = buffer.readAllAndClean();
-                if(averages == null || averages.isEmpty()) continue;
+                if(averages == null || averages.isEmpty()){
+                    continue;
+                }
 
                 long ts = System.currentTimeMillis();
                 Co2AveragesPacket packet = new Co2AveragesPacket(thermalPowerPlant.getId(), ts, averages);
@@ -64,26 +73,24 @@ public class Co2AveragesScheduler extends Thread{
 
                 //printMeasurements(averages, ts);
 
-                i("Co2AveragesScheduler","Creato packet: " + packet);
-
-                Thread.sleep(10_000); // In modo da pubblicare un pacchetto ogni 10 secondi
+                i("Co2AveragesScheduler","CO2","Creato packet: " + packet);
 
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 break;
             } catch (Exception e){
-                e("Co2AveragesScheduler","Errore: " + e.getMessage());
+                e("Co2AveragesScheduler","CO2","Errore: " + e.getMessage());
                 Thread.currentThread().interrupt();
                 break;
             }
         }
-        i("Co2AveragesScheduler","Terminato.");
+        i("Co2AveragesScheduler","CO2","Terminato.");
     }
 
     private void printMeasurements(List<Measurement> averages, long ts) {
-        i("Co2AveragesScheduler","Pacchetto creato alle " + ts + " con " + averages.size() + " medie:");
+        i("Co2AveragesScheduler","CO2","Pacchetto creato alle " + ts + " con " + averages.size() + " medie:");
         for (Measurement m : averages) {
-            i("Co2AveragesScheduler","   -> Media: " + m.getValue() + " g, timestamp: " + m.getTimestamp());
+            i("Co2AveragesScheduler","CO2","   -> Media: " + m.getValue() + " g, timestamp: " + m.getTimestamp());
         }
     }
 }

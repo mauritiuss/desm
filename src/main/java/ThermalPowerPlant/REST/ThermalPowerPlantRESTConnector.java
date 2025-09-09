@@ -60,14 +60,14 @@ public class ThermalPowerPlantRESTConnector {
             }
         }catch (HttpClientErrorException e) {
             if(e.getStatusCode() == HttpStatus.CONFLICT){
-                w("ThermalPowerPlantRESTConnector","ID già presente (Errore 409): " + thermalPowerPlant.getId());
+                w("ThermalPowerPlantRESTConnector","OTHER","ID già presente (Errore 409): " + thermalPowerPlant.getId());
                 return false;
             }else{
-                w("ThermalPowerPlantRESTConnector","Errore HTTP: " + e.getStatusCode());
+                w("ThermalPowerPlantRESTConnector","OTHER","Errore HTTP: " + e.getStatusCode());
                 return false;
             }
         }catch (Exception e) {
-            e("ThermalPowerPlantRESTConnector","Errore durante l'invio della ThermalPowerPlant: " + e.getMessage());
+            e("ThermalPowerPlantRESTConnector","OTHER","Errore durante l'invio della ThermalPowerPlant: " + e.getMessage());
             return false;
         }
     }
@@ -83,7 +83,7 @@ public class ThermalPowerPlantRESTConnector {
 
             return response.getBody() != null ? response.getBody() : new ThermalPowerPlant[0];
         } catch (Exception e) {
-            e("ThermalPowerPlantRESTConnector","Errore durante la richiesta al server: " + e.getMessage());
+            e("ThermalPowerPlantRESTConnector","OTHER","Errore durante la richiesta al server: " + e.getMessage());
             return new ThermalPowerPlant[0];
         }
     }
@@ -95,10 +95,10 @@ public class ThermalPowerPlantRESTConnector {
             restTemplate.delete(url);
             return true;
         } catch (HttpClientErrorException.NotFound e) {
-            e("ThermalPowerPlantRESTConnector","ID non trovato sul server: " + e.getMessage());
+            e("ThermalPowerPlantRESTConnector","EXIT","ID non trovato sul server: " + e.getMessage());
             return false;
         } catch (Exception e) {
-            e("ThermalPowerPlantRESTConnector","Errore durante la rimozione: " + e.getMessage());
+            e("ThermalPowerPlantRESTConnector","EXIT","Errore durante la rimozione: " + e.getMessage());
             return false;
         }
     }

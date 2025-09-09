@@ -33,10 +33,10 @@ public class ThermalPowerPlantServer {
                 .addService(new ExitServiceImpl())
                 .build()
                 .start();
-        i("ThermalPowerPlantServer",""+ ThermalPowerPlant.getInstance().getId() + " Server gRPC avviato sulla porta " + port);
+        //i("ThermalPowerPlantServer",""+ ThermalPowerPlant.getInstance().getId() + " Server gRPC avviato sulla porta " + port);
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            e("ThermalPowerPlantServer","*** Shutdown server gRPC");
+            e("ThermalPowerPlantServer","OTHER","*** Shutdown server gRPC");
             ThermalPowerPlantServer.this.stop();
         }));
     }
@@ -72,20 +72,20 @@ public class ThermalPowerPlantServer {
 
             ThermalPowerPlant plant = ThermalPowerPlant.getInstance();
 
-            i("ThermalPowerPlantServer",""+plant.getId()+" ha ricevuto messaggio di presentazione da ThermalPowerPlant:" +request.getId()+
+            i("ThermalPowerPlantServer","PRESENTATION",""+plant.getId()+" ha ricevuto messaggio di presentazione da ThermalPowerPlant:" +request.getId()+
                     ", "+request.getAddress()+", "+request.getPort());
 
             //Caso: il messaggio è tornato al mittente → chiusura dell'anello
             if(request.getId().equals(plant.getId())) {
-                i("ThermalPowerPlantServer","Il messaggio è tornato al mittente. Interrompo la catena --> "+request.getId()+" = "+plant.getId());
+                i("ThermalPowerPlantServer","PRESENTATION","Il messaggio è tornato al mittente. Interrompo la catena --> "+request.getId()+" = "+plant.getId());
             } else {
                 // Il messaggio proviene da un'altra ThermalPowerPlant → inoltro o aggiornamento
 
-                i("ThermalPowerPlantServer","Sono: "+plant.getId()+" ed il mio next è: "+plant.getNextId()+ " ed il next della richiesta è: "+request.getNextId());
+                i("ThermalPowerPlantServer","PRESENTATION","Sono: "+plant.getId()+" ed il mio next è: "+plant.getNextId()+ " ed il next della richiesta è: "+request.getNextId());
 
                 if (request.getNextId().equals(plant.getNextId())) {
                     // Sono l'ultimo dell'anello: aggiorno il riferimento al prossimo
-                    i("ThermalPowerPlantServer",""+plant.getId()+" sono l'ultimo dell'anello. Aggiorno il next con chi si presenta.");
+                    i("ThermalPowerPlantServer","PRESENTATION",""+plant.getId()+" sono l'ultimo dell'anello. Aggiorno il next con chi si presenta.");
 
                     plant.setNextId(request.getId());
                     plant.setNextAddress(request.getAddress());
@@ -93,7 +93,7 @@ public class ThermalPowerPlantServer {
 
                 }
 
-                i("ThermalPowerPlantServer",""+plant.getId()+" inoltro il messaggio di presentazione a: "+plant.getNextId());
+                i("ThermalPowerPlantServer","PRESENTATION",""+plant.getId()+" inoltro il messaggio di presentazione a: "+plant.getNextId());
 
                 ThermalPowerPlantClient client = new ThermalPowerPlantClient(
                         plant.getNextAddress(), plant.getNextPort()
@@ -142,7 +142,7 @@ public class ThermalPowerPlantServer {
                     handleElected(request.getElected());
                     break;
                 case MESSAGETYPE_NOT_SET:
-                    w("ThermalPowerPlantServer"," Messaggio ricevuto senza contenuto!");
+                    w("ThermalPowerPlantServer","ELECTION"," Messaggio ricevuto senza contenuto!");
                     break;
             }
 
@@ -243,11 +243,11 @@ public class ThermalPowerPlantServer {
                     int energyKwh = elected.getKwh();
                     long productionTimeMs = (long) energyKwh; // 1 ms per kWh richiesto
 
-                    i("ThermalPowerPlantServer","" + plant.getId() + " ha vinto l'elezione. Produzione di " + energyKwh + " kWh → attendo " + productionTimeMs + " ms...");
+                    i("ThermalPowerPlantServer","ELECTION","" + plant.getId() + " ha vinto l'elezione. Produzione di " + energyKwh + " kWh → attendo " + productionTimeMs + " ms...");
 
                     Thread.sleep(productionTimeMs);
 
-                    i("ThermalPowerPlantServer","" + plant.getId() + " ha terminato la produzione di " + energyKwh + " kWh");
+                    i("ThermalPowerPlantServer","ELECTION","" + plant.getId() + " ha terminato la produzione di " + energyKwh + " kWh");
                     plant.setBusy(false);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
@@ -266,6 +266,57 @@ public class ThermalPowerPlantServer {
 
         @Override
         public void sendMessage(ExitProto.ExitMessage request, StreamObserver<ExitProto.ExitAck> responseObserver){
+
+            ThermalPowerPlant plant = ThermalPowerPlant.getInstance();
+
+            //Caso: il messaggio è tornato al mittente -> chiusura dell'anello
+            if(request.getExitingId().equals(plant.getId())){
+                i("ThermalPowerPlantServer","EXIT","Il messaggio è tornato al mittente. Interrompo la catena --> "+request.getExitingId()+" = "+plant.getId());
+            } else {
+                // Il messaggio proviene da un'altra ThermalPowerPlant → inoltro o aggiornamento
+
+                i("ThermalPowerPlantServer","EXIT","Sono: "+plant.getId()+" ed il mio next è: "+plant.getNextId()+ " ed il next di chi fa la richiesta è: "+request.getExitingNextId());
+
+                ThermalPowerPlantClient client = new ThermalPowerPlantClient(
+                        plant.getNextAddress(), plant.getNextPort()
+                );
+
+                if(request.getExitingId().equals(plant.getNextId())){
+                    // Sono l'ultimo dell'anello: aggiorno il riferimento al prossimo
+                    i("ThermalPowerPlantServer","EXIT",""+plant.getId()+" sono l'ultimo dell'anello. Aggiorno il next con il next di chi fa la richiesta.");
+                    plant.setNextId(request.getExitingNextId());
+                    plant.setNextAddress(request.getExitingNextAddress());
+                    plant.setNextPort(request.getExitingNextPort());
+
+                }
+
+                i("ThermalPowerPlantServer","EXIT",""+plant.getId()+" inoltro il messaggio di exiting a: "+plant.getNextId());
+
+
+                // Inoltro il messaggio al prossimo nodo
+                client.sendExitMessage(
+                        request.getExitingId(),
+                        request.getExitingAddress(),
+                        request.getExitingPort(),
+                        request.getExitingNextId(),
+                        request.getExitingNextAddress(),
+                        request.getExitingNextPort()
+                );
+
+                client.shutdown();
+
+            }
+
+            // Invio ack al chiamante
+            ExitProto.ExitAck ack = ExitProto.ExitAck.newBuilder()
+                    .setMessage("Presentazione ricevuta con successo da " + request.getExitingId())
+                    .build();
+
+            responseObserver.onNext(ack);
+            responseObserver.onCompleted();
+
+            //Ragionamento non funzionante
+            /*
             String exitingId = request.getExitingId();
             String exitingNextId = request.getExitingNextId();
             String exitingNextAddress = request.getExitingNextAddress();
@@ -278,7 +329,7 @@ public class ThermalPowerPlantServer {
                 plant.setNextId(exitingNextId);
                 plant.setNextAddress(exitingNextAddress);
                 plant.setNextPort(exitingNextPort);
-                i("ThermalPowerPlantServer"," Aggiornato il next: ora punto a " + plant.getNextId());
+                i("ThermalPowerPlantServer","EXIT"," Aggiornato il next: ora punto a " + plant.getNextId());
             }
 
             //Condizioni di stop propagazione
@@ -301,8 +352,8 @@ public class ThermalPowerPlantServer {
 
                 client.shutdown();
             } else {
-                if(backToExiting) i("ThermalPowerPlantServer"," Messaggio di Exit ritornato al mittente.");
-                if(singleNode) i("ThermalPowerPlantServer"," Anello degenerato ad un solo nodo. Stop inoltro.");
+                if(backToExiting) i("ThermalPowerPlantServer","EXIT"," Messaggio di Exit ritornato al mittente.");
+                if(singleNode) i("ThermalPowerPlantServer","EXIT"," Anello degenerato ad un solo nodo. Stop inoltro.");
             }
 
             // Invio ack al chiamante
@@ -312,7 +363,7 @@ public class ThermalPowerPlantServer {
 
             responseObserver.onNext(ack);
             responseObserver.onCompleted();
-
+            */
         }
     }
 

@@ -31,8 +31,8 @@ ThermalPowerPlant/grpc/ExitProto.java
  ThermalPowerPlant.grpc.ExitProto$ExitMessageOrBuilder
 ThermalPowerPlant/gRPC/ThermalPowerPlantGRPCConnector.java
  ThermalPowerPlant.gRPC.ThermalPowerPlantGRPCConnector
-ThermalPowerPlant/REST/ThermalPowerPlantRESTConnector.java
- ThermalPowerPlant.REST.ThermalPowerPlantRESTConnector
+RenewableEnergyProvider/RenewableEnergyProvider.java
+ RenewableEnergyProvider.RenewableEnergyProvider
 ThermalPowerPlant/gRPC/ThermalPowerPlantServer.java
  ThermalPowerPlant.gRPC.ThermalPowerPlantServer
  ThermalPowerPlant.gRPC.ThermalPowerPlantServer$1
@@ -91,9 +91,8 @@ AdministrationServer/MQTT/AdministrationServerMQTTConnector.java
  AdministrationServer.MQTT.AdministrationServerMQTTConnector
 AdministrationServer/AdministrationServer.java
  AdministrationServer.AdministrationServer
-RenewableEnergyProvider/RenewableEnergyProvider.java
- RenewableEnergyProvider.RenewableEnergyProvider
- RenewableEnergyProvider.RenewableEnergyProvider$1
+AdministrationClient/ClientMenu.java
+ AdministrationClient.ClientMenu
 AdministrationServer/AdministrationServerRunner.java
  AdministrationServer.AdministrationServerRunner
 Simulator/PollutionSensor.java
@@ -121,6 +120,8 @@ Simulator/BufferProperties.java
  Simulator.BufferProperties
 Simulator/Measurement.java
  Simulator.Measurement
+AdministrationClient/AdministrationClient.java
+ AdministrationClient.AdministrationClient
 ThermalPowerPlant/grpc/ExitServiceGrpc.java
  ThermalPowerPlant.grpc.ExitServiceGrpc
  ThermalPowerPlant.grpc.ExitServiceGrpc$1
@@ -132,7 +133,5 @@ ThermalPowerPlant/grpc/ExitServiceGrpc.java
  ThermalPowerPlant.grpc.ExitServiceGrpc$ExitServiceMethodDescriptorSupplier
  ThermalPowerPlant.grpc.ExitServiceGrpc$ExitServiceStub
  ThermalPowerPlant.grpc.ExitServiceGrpc$MethodHandlers
-AdministrationClient/ClientMenu.java
- AdministrationClient.ClientMenu
-AdministrationClient/AdministrationClient.java
- AdministrationClient.AdministrationClient
+ThermalPowerPlant/REST/ThermalPowerPlantRESTConnector.java
+ ThermalPowerPlant.REST.ThermalPowerPlantRESTConnector

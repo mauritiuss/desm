@@ -47,13 +47,13 @@ public class ThermalPowerPlantService {
 
         for (ThermalPowerPlant p : thermalPowerPlantList) {
             if (p.getId() != null && p.getId().equalsIgnoreCase(newId)) {
-                i("ThermalPowerPlantService", "ID già esistente: "+newId);
+                i("ThermalPowerPlantService", "PRESENTATION","ID già esistente: "+newId);
                 return false;
             }
         }
 
         thermalPowerPlantList.add(thermalPowerPlant);
-        i("ThermalPowerPlantService", "Aggiunta ThermalPowerPlant con ID: " + newId);
+        i("ThermalPowerPlantService", "PRESENTATION","Aggiunta ThermalPowerPlant con ID: " + newId);
         return true;
     }
 
@@ -63,14 +63,14 @@ public class ThermalPowerPlantService {
      * @return l'oggetto ThermalPowerPlant se trovato, null altrimenti.
      */
     public synchronized ThermalPowerPlant getById(String id) {
-        i("ThermalPowerPlantService", "Cercando di restituire la ThermalPowerPlant con ID: " + id);
+        i("ThermalPowerPlantService", "OTHER","Cercando di restituire la ThermalPowerPlant con ID: " + id);
         for (ThermalPowerPlant thermalPowerPlant : thermalPowerPlantList) {
             if (thermalPowerPlant.getId() != null && thermalPowerPlant.getId().equalsIgnoreCase(id)) {
-                i("ThermalPowerPlantService", "Ritorno della ThermalPowerPlant con ID: " + id);
+                i("ThermalPowerPlantService", "OTHER","Ritorno della ThermalPowerPlant con ID: " + id);
                 return thermalPowerPlant;
             }
         }
-        i("ThermalPowerPlantService", "Non è stata trovata nessuna ThermalPowerPlant con ID: " + id);
+        i("ThermalPowerPlantService", "OTHER","Non è stata trovata nessuna ThermalPowerPlant con ID: " + id);
         return null; // Not found
     }
 
@@ -90,11 +90,11 @@ public class ThermalPowerPlantService {
         for (ThermalPowerPlant thermalPowerPlant : thermalPowerPlantList) {
             if( thermalPowerPlant.getId() != null && thermalPowerPlant.getId().equalsIgnoreCase(id)) {
                 thermalPowerPlantList.remove(thermalPowerPlant);
-                i("ThermalPowerPlantService", "Rimossa ThermalPowerPlant con ID: " + id);
+                i("ThermalPowerPlantService", "EXIT","Rimossa ThermalPowerPlant con ID: " + id);
                 return true;
             }
         }
-        i("ThermalPowerPlantService", "Nessuna ThermalPowerPlant con ID: " + id);
+        i("ThermalPowerPlantService", "EXIT","Nessuna ThermalPowerPlant con ID: " + id);
         return false;
     }
 

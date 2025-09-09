@@ -27,9 +27,9 @@ public class ClientMenu implements DisplayableMenu {
 
         if(plants.length == 0){
             System.out.println("Nessuna Thermal Power Plant è presente");
-            i("ClientMenu","Nessuna Thermal Power Plant è presente");
+            i("ClientMenu","OTHER","Nessuna Thermal Power Plant è presente");
         }else{
-            i("ClientMenu","Thermal Power Plant:");
+            i("ClientMenu","OTHER","Thermal Power Plant:");
             for (ThermalPowerPlant p : plants) {
                 System.out.println(p.toString());
             }
@@ -52,10 +52,10 @@ public class ClientMenu implements DisplayableMenu {
                 if (value >= 0 && value <= 2) {
                     return value;
                 } else {
-                    i("ClientMenu", "Inserisci un numero valido tra 0 e 2");
+                    i("ClientMenu", "OTHER","Inserisci un numero valido tra 0 e 2");
                 }
             } catch (NumberFormatException e) {
-                i("ClientMenu", "Inserisci un numero intero valido");
+                i("ClientMenu", "OTHER","Inserisci un numero intero valido");
             }
         }
     }
@@ -66,31 +66,31 @@ public class ClientMenu implements DisplayableMenu {
                 return scanner.nextLong();
             } else {
                 scanner.next();
-                i("ClientMenu","Inserisci un numero long valido (millisecondi).");
+                i("ClientMenu","CO2","Inserisci un numero long valido (millisecondi).");
             }
         }
     }
 
     @Override
     public void displayAverageBetweenTimestamp(){
-        i("ClientMenu","Inserisci t1 (timestamp in millisecondi): ");
+        i("ClientMenu","CO2","Inserisci t1 (timestamp in millisecondi): ");
         long t1 = readControlledLong();
 
-        i("ClientMenu","Inserisci t2 (timestamp in millisecondi): ");
+        i("ClientMenu","CO2","Inserisci t2 (timestamp in millisecondi): ");
         long t2 = readControlledLong();
 
         try{
             Double avg = AdministrationClientRESTConnector.getInstance().getAverageBetweenTimestamp(t1, t2);
 
             if(avg == null){
-                i("ClientMenu","Nessuna misura trovata nell'intervallo [" + t1 + ", " + t2 + "].");
+                i("ClientMenu","CO2","Nessuna misura trovata nell'intervallo [" + t1 + ", " + t2 + "].");
             } else {
-                i("ClientMenu","Media valori nell'intervallo [" + t1 + ", " + t2 + "]: " + avg);
+                i("ClientMenu","CO2","Media valori nell'intervallo [" + t1 + ", " + t2 + "]: " + avg);
             }
         } catch (IllegalArgumentException e){
-            e("ClientMenu","Input non valido: t1 deve essere minore o uguale a t2.");
+            e("ClientMenu","CO2","Input non valido: t1 deve essere minore o uguale a t2.");
         } catch (Exception e){
-            e("ClientMenu","Errore durante la richiesta: " + e.getMessage());
+            e("ClientMenu","CO2","Errore durante la richiesta: " + e.getMessage());
         }
     }
 }

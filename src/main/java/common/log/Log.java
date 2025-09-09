@@ -9,8 +9,8 @@ public class Log {
     private Log() {}
 
     // Log informativo (normale flusso di esecuzione, eventi attesi)
-    public static void i(String tag, String msg) {
-        System.out.println(ts() + " [" + tag + "] " + msg);
+    public static void i(String classe, String tag, String msg) {
+        System.out.println(ts() + " [" + tag + "] - [" + classe + "] " + msg);
     }
 
     // Log informativo del client
@@ -19,13 +19,13 @@ public class Log {
     }
 
     // Log di warning (qualcosa di anomalo ma non bloccante)
-    public static void w(String tag, String msg) {
-        System.out.println(ts() + " [WARN][" + tag + "] " + msg);
+    public static void w(String classe, String tag, String msg) {
+        System.out.println(ts() + " [WARN][" + tag + "] - [" + classe + "] " + msg);
     }
 
     // Log di errore senza eccezione (problema grave da segnalare, ma senza stacktrace)
-    public static void e(String tag, String msg) {
-        System.err.println(ts() + " [ERR ][" + tag + "] " + msg);
+    public static void e(String classe, String tag, String msg) {
+        System.err.println(ts() + " [ERR ][" + tag + "] - [" + classe + "] " + msg);
     }
 
     // Log di errore con eccezione (problema grave e voglio anche stampare stacktrace)

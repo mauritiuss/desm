@@ -44,9 +44,9 @@ public abstract class MQTTConnector implements MqttCallbackExtended {
     public void disconnect() {
         try{
             client.disconnect();
-            i("MQTTConnector", "Disconnessione dal broker MQTT avvenuta con successo");
+            i("MQTTConnector", "OTHER", "Disconnessione dal broker MQTT avvenuta con successo");
         }catch (MqttException e){
-            e("MQTTConnector", "Errore disconnessione dal broker MQTT", e);
+            e("MQTTConnector", "OTHER","Errore disconnessione dal broker MQTT");
         }
     }
 
@@ -89,22 +89,18 @@ public abstract class MQTTConnector implements MqttCallbackExtended {
     @Override
     public void connectComplete(boolean reconnect, String serverURI){
         if (reconnect) {
-            i("MQTTConnector", ThermalPowerPlant.ThermalPowerPlant.getInstance().getId() + " Riconnessione al MQTT broker avvenuta");
+            i("MQTTConnector", "OTHER",ThermalPowerPlant.ThermalPowerPlant.getInstance().getId() + " Riconnessione al MQTT broker avvenuta");
         }else{
-            if (ThermalPowerPlant.ThermalPowerPlant.getInstance().getId() == null){
-                i("MQTTConnector", "RenewableEnergyProvider connessione al MQTT broker avvenuta");
-            }else{
-                i("MQTTConnector", ThermalPowerPlant.ThermalPowerPlant.getInstance().getId() + " Connessione al MQTT broker avvenuta");
-            }
+            i("MQTTConnector", "OTHER","Connessione al MQTT broker avvenuta");
         }
     }
 
     @Override
     public void connectionLost(Throwable cause){
-        e("MQTTConnector", "Connessione persa: " + cause.getMessage());
+        e("MQTTConnector", "OTHER","Connessione persa: " + cause.getMessage());
         if (cause instanceof MqttException) {
             MqttException me = (MqttException) cause;
-            e("MQTTConnector", "  - Reason code: " + me.getReasonCode());
+            e("MQTTConnector","OTHER", "  - Reason code: " + me.getReasonCode());
             e("MQTTConnector", "  - Inner cause: " + me.getCause(), me);
             me.printStackTrace();
         }
@@ -112,12 +108,12 @@ public abstract class MQTTConnector implements MqttCallbackExtended {
 
     @Override
     public void messageArrived(String topic, MqttMessage message) throws Exception {
-        i("MQTTConnector", "Topic: " + topic + " | Messaggio: " + new String(message.getPayload()));
+        i("MQTTConnector", "OTHER","Topic: " + topic + " | Messaggio: " + new String(message.getPayload()));
     }
 
     @Override
     public void deliveryComplete(IMqttDeliveryToken token) {
-        i("MQTTConnector", "Messaggio consegnato: " + token.toString());
+        //i("MQTTConnector", "Messaggio consegnato: " + token.toString());
     }
 
 

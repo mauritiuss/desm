@@ -24,9 +24,9 @@ public class AdministrationServerMQTTConnector extends MQTTConnector {
 
         try{
             client.subscribe(MQTTProperties.CO2_AVERAGES_TOPIC, MQTTProperties.QOS);
-            i("AdministrationServerMQTTConnector", "Iscritto al topic: "+MQTTProperties.CO2_AVERAGES_TOPIC);
+            i("AdministrationServerMQTTConnector", "OTHER","Iscritto al topic: "+MQTTProperties.CO2_AVERAGES_TOPIC);
         }catch (MqttException e){
-            e("AdministrationServerMQTTConnector", "Errore nella sottoscrizione",e);
+            e("AdministrationServerMQTTConnector","OTHER", "Errore nella sottoscrizione");
         }
     }
 
@@ -34,20 +34,20 @@ public class AdministrationServerMQTTConnector extends MQTTConnector {
     public void messageArrived(String topic, MqttMessage message){
         String payload = new String(message.getPayload());
         String thermalPowerPlantId = extractPlantIdFromTopic(topic);
-        i("AdministrationServerMQTTConnector", "Dati di inquinamento ricevuti per il topic: " + topic +": "+payload);
+        i("AdministrationServerMQTTConnector", "CO2","Dati di inquinamento ricevuti per il topic: " + topic +": "+payload);
 
         try{
             List<Measurement> measurements = parseMeasurements(payload);
 
             for (Measurement m : measurements) {
-                i("AdministrationServerMQTTConnector", "Measurement parsato: " + m.toString() + ", Id Thermal Power Plant: " + thermalPowerPlantId);
+                i("AdministrationServerMQTTConnector", "CO2","Measurement parsato: " + m.toString() + ", Id Thermal Power Plant: " + thermalPowerPlantId);
                 administrationServer.saveMeasurement(thermalPowerPlantId, m);
             }
 
             administrationServer.printStorage();
 
         }catch (Exception e){
-            e("AdministrationServerMQTTConnector", "Errore parsing/salvataggio: " + e.getMessage());
+            e("AdministrationServerMQTTConnector","CO2", "Errore parsing/salvataggio: " + e.getMessage());
             e.printStackTrace();
         }
     }

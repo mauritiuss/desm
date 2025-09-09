@@ -14,7 +14,7 @@ public class AdministrationServerRunner {
 
     public static void main(String[] args) {
         SpringApplication.run(AdministrationServerRunner.class, args);
-        i("AdministrationServerRunner", "Server running on http://localhost:8080");
+        i("AdministrationServerRunner", "OTHER", "Server running on http://localhost:8080");
 
         AdministrationServer server = AdministrationServer.getInstance();
 

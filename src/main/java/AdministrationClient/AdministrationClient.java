@@ -21,9 +21,9 @@ public class AdministrationClient {
                     menu.displayAverageBetweenTimestamp();
                     break;
                 default:
-                    w("AdministrationClient", "Scelta non valida");
+                    w("AdministrationClient", "OTHER","Scelta non valida");
             }
-            i("AdministrationClient", "Premere invio per continuare...");
+            i("AdministrationClient", "OTHER","Premere invio per continuare...");
             new java.util.Scanner(System.in).nextLine();
         }
     }
