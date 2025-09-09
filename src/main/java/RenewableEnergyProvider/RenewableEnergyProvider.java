@@ -25,10 +25,9 @@ public class RenewableEnergyProvider extends MQTTConnector {
 
         testSinglePublishing();
         testSinglePublishing();
-        //testSinglePublishing();
 
 
-        /*Timer timer = new Timer();
+        Timer timer = new Timer();
 
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -49,9 +48,9 @@ public class RenewableEnergyProvider extends MQTTConnector {
                 );
 
                 publish(ENERGY_REQUEST_TOPIC, payload); //Utilizza il metodo della superclasse
-                i("RenewableEnergyProvider","Inviata richiesta per payload: " + payload);
+                i("RenewableEnergyProvider","OTHER","Inviata richiesta per payload: " + payload);
             }
-        }, 0, PUBLISH_INTERVAL_MS);*/
+        }, 0, PUBLISH_INTERVAL_MS);
     }
 
     /*

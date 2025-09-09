@@ -6,14 +6,18 @@ import static common.log.Log.*;
 import java.util.Scanner;
 
 /**
- * Questa classe è la classe che permette di mostrare il menù
+ * Classe che implementa il menu lato administrationClient.
  */
 public class ClientMenu implements DisplayableMenu {
 
-    private Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in);
 
     public ClientMenu() { AdministrationClientRESTConnector.getInstance(); }
 
+    /**
+     * Mostra il menu e acquisisce una scelta numerica dell'utente.
+     * @return un intero che rappresenta la scelta dell'utente:
+     */
     @Override
     public int getChoice(){
         printMenu();
@@ -21,6 +25,10 @@ public class ClientMenu implements DisplayableMenu {
         return readControlledInt();
     }
 
+    /**
+     * Recupera e mostra la lista delle Thermal Power Plants.
+     * Se non è presente nessuna centrale, stampa un messaggio dedicato.
+     */
     @Override
     public void displayThermalPowerPlants() {
         ThermalPowerPlant[] plants = AdministrationClientRESTConnector.getInstance().getThermalPowerPlants();
@@ -36,6 +44,9 @@ public class ClientMenu implements DisplayableMenu {
         }
     }
 
+    /**
+     * Stampa il menu principale con le opzioni disponibili.
+     */
     private void printMenu() {
         ic("\n --- Menu Administration Client ---");
         ic("1. Mostra elenco delle Thermal Power Plants");
@@ -44,6 +55,10 @@ public class ClientMenu implements DisplayableMenu {
         ic("-----------------------------------\n");
     }
 
+    /**
+     * Legge un numero intero da input e lo valida.
+     * @return un intero valido tra 0 e 2
+     */
     private int readControlledInt() {
         while (true) {
             String input = scanner.nextLine().trim(); // legge tutta la riga
@@ -60,17 +75,10 @@ public class ClientMenu implements DisplayableMenu {
         }
     }
 
-    private long readControlledLong() {
-        while (true) {
-            if (scanner.hasNextLong()) {
-                return scanner.nextLong();
-            } else {
-                scanner.next();
-                i("ClientMenu","CO2","Inserisci un numero long valido (millisecondi).");
-            }
-        }
-    }
-
+    /**
+     * Gestisce la richiesta dell'utente di visualizzare la media delle emissioni di CO2 tra due timestamp forniti da console.
+     * Gestisce eventuali errori dovuti a input non valido o problemi di comunicazione.
+     */
     @Override
     public void displayAverageBetweenTimestamp(){
         i("ClientMenu","CO2","Inserisci t1 (timestamp in millisecondi): ");
@@ -91,6 +99,21 @@ public class ClientMenu implements DisplayableMenu {
             e("ClientMenu","CO2","Input non valido: t1 deve essere minore o uguale a t2.");
         } catch (Exception e){
             e("ClientMenu","CO2","Errore durante la richiesta: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Legge un numero long da input e lo valida. Usato per acquisire i timestamp (in millisecondi).
+     * @return un valore long rappresentante un timestamp in millisecondi
+     */
+    private long readControlledLong() {
+        while (true) {
+            if (scanner.hasNextLong()) {
+                return scanner.nextLong();
+            } else {
+                scanner.next();
+                i("ClientMenu","CO2","Inserisci un numero long valido (millisecondi).");
+            }
         }
     }
 }

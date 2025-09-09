@@ -1,12 +1,15 @@
 package common.model;
 
 import Simulator.Measurement;
-
 import java.util.List;
 
 /**
- * Rappresenta un pacchetto di medie CO2 pronte per l'invio.
- * Contiene l'ID della ThermalPowerPlant, il timestamp di creazione del pacchetto e la lista delle medie calcolate.
+ * Rappresenta un pacchetto contenente le medie delle emissioni di CO2 calcolate da una {@link ThermalPowerPlant}.
+ * Un pacchetto è composto da:
+ * - L'ID della ThermalPowerPlant che ha generato i dati.
+ * - Il timestamp di creazione del pacchetto.
+ * - Una lista di {@link Measurement} che rappresentano le medie calcolate su finestre temporali del sensore di inquinamento.
+ * Questi pacchetti vengono generati dal {@link ThermalPowerPlant.Co2AveragesScheduler} e successivamente pubblicati via MQTT.
  */
 public class Co2AveragesPacket {
 

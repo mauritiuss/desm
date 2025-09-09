@@ -1,12 +1,13 @@
 package common.MQTT;
 
-import ThermalPowerPlant.ThermalPowerPlantRunner;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import static common.log.Log.*;
 
 /**
- * Questa classe astratta contiene tutti i metodi per la comunicazione MQTT
+ * Componente base per la comunicazione MQTT
+ * Nota: Usa {@link #publishNonRetained(String, String)} per evitare che il broker mantenga l’ultimo messaggio (utile per stream di misure).
+ * Usa {@link #publish(String, String)} (retained=true) solo per messaggi “di stato” che devono essere consegnati ai nuovi subscriber.
  */
 public abstract class MQTTConnector implements MqttCallbackExtended {
     protected MqttClient client;
@@ -14,8 +15,8 @@ public abstract class MQTTConnector implements MqttCallbackExtended {
 
     /**
      * Costruttore per MQTTConnector
-     * Inizializza il client con tutte le opzioni necessarie
-     * e si connette al broker MQTT
+     * Inizializza il client con tutte le opzioni necessarie e si connette al broker MQTT.
+     * @throws RuntimeException se la connessione non può essere creata (termina il processo).
      */
     protected MQTTConnector() {
         try {
@@ -39,7 +40,7 @@ public abstract class MQTTConnector implements MqttCallbackExtended {
     }
 
     /**
-     * Metodo per disconnettere il client dal MQTT Broker
+     * Disconnette il client dal broker MQTT.
      */
     public void disconnect() {
         try{
@@ -51,7 +52,8 @@ public abstract class MQTTConnector implements MqttCallbackExtended {
     }
 
     /**
-     * Pubblica un messaggio su un argomento dato
+     * Pubblica un messaggio RETAINED su un topic.
+     * Il messaggio rimane memorizzato sul broker e verrà consegnato ai futuri subscriber del topic.
      * @param topic l'argomento su cui verrà pubblicato il messaggio
      * @param payload il messaggio da pubblicare
      */
@@ -81,7 +83,6 @@ public abstract class MQTTConnector implements MqttCallbackExtended {
             e("MQTTConnector", "Errore publishNonRetained", e);
         }
     }
-
 
     /**
      * Metodi generati automaticamente

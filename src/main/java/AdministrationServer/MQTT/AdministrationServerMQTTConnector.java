@@ -6,18 +6,29 @@ import common.MQTT.MQTTConnector;
 import common.MQTT.MQTTProperties;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import static common.log.Log.*;
 
+/**
+ * Connettore MQTT lato Administration Server.
+ * Si occupa di:
+ * - Connettersi al broker MQTT
+ * - Sottoscriversi al topic dedicato alle misure di CO2 delle Thermal Power Plants
+ * - Ricevere i messaggi MQTT e parsarli in oggetti {@link Measurement}
+ * - Salvare le misure ricevute nello storage dell' {@link AdministrationServer}
+ */
 public class AdministrationServerMQTTConnector extends MQTTConnector {
 
-    private AdministrationServer administrationServer = AdministrationServer.getInstance();
+    private final AdministrationServer administrationServer = AdministrationServer.getInstance();
 
+    /**
+     * Callback invocata quando la connessione al broker MQTT è stata completata.
+     * @param reconnect indica se la connessione è un tentativo di riconnessione
+     * @param serverURI URI del broker MQTT
+     */
     @Override
     public void connectComplete(boolean reconnect, String serverURI) {
         super.connectComplete(reconnect, serverURI);
@@ -30,6 +41,11 @@ public class AdministrationServerMQTTConnector extends MQTTConnector {
         }
     }
 
+    /**
+     * Callback invocata quando arriva un messaggio MQTT.
+     * @param topic il topic su cui è arrivato il messaggio
+     * @param message il messaggio MQTT contenente il payload JSON
+     */
     @Override
     public void messageArrived(String topic, MqttMessage message){
         String payload = new String(message.getPayload());
@@ -48,10 +64,15 @@ public class AdministrationServerMQTTConnector extends MQTTConnector {
 
         }catch (Exception e){
             e("AdministrationServerMQTTConnector","CO2", "Errore parsing/salvataggio: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
+    /**
+     * Effettua il parsing del payload JSON ricevuto in una lista di {@link Measurement}.
+     * @param json il payload JSON ricevuto via MQTT
+     * @return una lista di {@link Measurement} estratti dal JSON
+     * @throws IllegalArgumentException se il JSON è vuoto o malformato
+     */
     private List<Measurement> parseMeasurements(String json) {
         if (json == null || json.isEmpty()) throw new IllegalArgumentException("Payload vuoto");
 
@@ -94,6 +115,11 @@ public class AdministrationServerMQTTConnector extends MQTTConnector {
         return out;
     }
 
+    /**
+     * Estrae l'ID della Thermal Power Plant a partire dal topic MQTT.
+     * @param topic il topic MQTT ricevuto
+     * @return l'ID della Thermal Power Plant se il topic è valido, altrimenti null
+     */
     private String extractPlantIdFromTopic(String topic) {
         if (topic == null) return null;
         String[] parts = topic.split("/");

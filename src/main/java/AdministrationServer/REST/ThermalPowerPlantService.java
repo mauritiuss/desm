@@ -8,19 +8,18 @@ import java.util.List;
 import static common.log.Log.*;
 
 /*
-    Service è il componente centrale della logica applicativa per:
-    •	Aggiungere, leggere, cercare gli impianti
-	•	Garantire sincronizzazione base
-	•	Essere usato dal controller per rispondere alle richieste REST
-	Collection of resourses --> List of Thermal power plant
+ * Service è il componente centrale della logica applicativa per:
+ * - Gestire la collezione di ThermalPowerPlant.
+ * - Fornire metodi per aggiungere, leggere, cercare e rimuovere impianti.
+ * - Garantire sincronizzazione base per l’accesso concorrente.
+ * - Essere usato dal Controller per rispondere alle richieste REST.
 */
-
 @Service
 public class ThermalPowerPlantService {
     private final List<ThermalPowerPlant> thermalPowerPlantList = new ArrayList<>();
 
     /**
-     * Questo metodo restituisce una copia della lista di tutte le ThermalPowerPlant attualmente presenti.
+     * Restituisce una copia della lista di tutte le {@link ThermalPowerPlant} attualmente presenti.
      * @return una nuova lista contenente tutte le ThermalPowerPlant.
      */
     public synchronized List<ThermalPowerPlant> getThermalPowerPlantList() {
@@ -29,17 +28,8 @@ public class ThermalPowerPlantService {
     }
 
     /**
-     * Questo metodo imposta una nuova lista di ThermalPowerPlant, sovrascrivendo quella esistente.
-     * @param thermalPowerPlants la nuova lista di ThermalPowerPlant da impostare.
-     */
-    public synchronized void setThermalPowerPlantList(List<ThermalPowerPlant> thermalPowerPlants) {
-        thermalPowerPlantList.clear();
-        thermalPowerPlantList.addAll(thermalPowerPlants);
-    }
-
-    /**
-     * Questo metodo aggiunge una nuova ThermalPowerPlant alla lista, se il suo ID non è già presente.
-     * @param thermalPowerPlant l'oggetto ThermalPowerPlant da aggiungere.
+     * Aggiunge una nuova {@link ThermalPowerPlant} alla lista, se il suo ID non è già presente.
+     * @param thermalPowerPlant l'oggetto ThermalPowerPlant da aggiungere (non null).
      * @return true se la ThermalPowerPlant è stata aggiunta correttamente, false se l'ID esiste già.
      */
     public synchronized boolean add(ThermalPowerPlant thermalPowerPlant) {
@@ -58,8 +48,8 @@ public class ThermalPowerPlantService {
     }
 
     /**
-     * Questo metodo restituisce una ThermalPowerPlant in base all'ID fornito.
-     * @param id l'identificatore della ThermalPowerPlant da cercare.
+     * Restituisce una {@link ThermalPowerPlant} in base all'ID fornito.
+     * @param id l'identificatore della ThermalPowerPlant da cercare (non null).
      * @return l'oggetto ThermalPowerPlant se trovato, null altrimenti.
      */
     public synchronized ThermalPowerPlant getById(String id) {
@@ -75,7 +65,8 @@ public class ThermalPowerPlantService {
     }
 
     /**
-     * Calcola la media tra due timestamp delegando all'AdministrationServer.
+     * Calcola la media delle misurazioni di CO₂ tra due timestamp.
+     * La logica di calcolo è delegata a {@link AdministrationServer}.
      * @param t1 timestamp iniziale (ms)
      * @param t2 timestamp finale (ms)
      * @return Double con la media se presente, altrimenti null
@@ -86,6 +77,11 @@ public class ThermalPowerPlantService {
         return Double.isNaN(avg) ? null : avg;
     }
 
+    /**
+     * Rimuove una {@link ThermalPowerPlant} dalla lista tramite ID.
+     * @param id l’identificatore della centrale da rimuovere.
+     * @return true se la centrale è stata rimossa, false se non esiste alcuna centrale con quell’ID.
+     */
     public synchronized boolean removeThermalPowerPlant(String id) {
         for (ThermalPowerPlant thermalPowerPlant : thermalPowerPlantList) {
             if( thermalPowerPlant.getId() != null && thermalPowerPlant.getId().equalsIgnoreCase(id)) {

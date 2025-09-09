@@ -7,7 +7,10 @@ import java.util.Map;
 import Simulator.Measurement;
 import static common.log.Log.*;
 
-
+/**
+ * Singleton che rappresenta il server di amministrazione.
+ * Tutti i metodi sono sincronizzati per garantire la consistenza dei dati in scenari multi-threaded (es. ricezione concorrente di dati via MQTT).
+ */
 public class AdministrationServer {
 
     // Archivio in-memory: plantId -> elenco di misure average ricevute
@@ -27,8 +30,8 @@ public class AdministrationServer {
 
 
     /**
-     * Salva una misura per una ThermalPowerPlant. Se non esiste ancora una lista associata al plantId, viene creata.
-     * @param plantId    identificativo della ThermalPowerPlant
+     * Salva una misura per una {@link ThermalPowerPlant}. Se non esiste ancora una lista associata al plantId, viene creata.
+     * @param plantId identificativo della ThermalPowerPlant
      * @param measurement misura da aggiungere
      */
     public synchronized void saveMeasurement(String plantId, Measurement measurement) {
@@ -38,28 +41,7 @@ public class AdministrationServer {
     }
 
     /**
-     * Restituisce tutte le misure salvate per una ThermalPowerPlant.
-     * @param plantId identificativo della ThermalPowerPlant
-     * @return lista di misure salvate (vuota se nessuna)
-     */
-    public synchronized List<Measurement> getMeasurements(String plantId) {
-        return storage.getOrDefault(plantId, new ArrayList<>());
-    }
-
-    /**
-     * Restituisce tutte le misure salvate per tutte le ThermalPowerPlant.
-     * @return lista di tutte le misure salvate (vuota se nessuna)
-     */
-    public synchronized List<Measurement> getAllMeasurements() {
-        List<Measurement> all = new ArrayList<>();
-        for (List<Measurement> list : storage.values()) {
-            all.addAll(list);
-        }
-        return all;
-    }
-
-    /**
-     * Stampa lo stato corrente dello storage su console.
+     * Stampa sul log lo stato corrente dello storage, raggruppando le misure per ogni {@code plantId}.
      */
     public synchronized void printStorage() {
         i("AdministrationServer", "CO2", "Contenuto dello storage:");

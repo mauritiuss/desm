@@ -31,8 +31,8 @@ ThermalPowerPlant/grpc/ExitProto.java
  ThermalPowerPlant.grpc.ExitProto$ExitMessageOrBuilder
 ThermalPowerPlant/gRPC/ThermalPowerPlantGRPCConnector.java
  ThermalPowerPlant.gRPC.ThermalPowerPlantGRPCConnector
-RenewableEnergyProvider/RenewableEnergyProvider.java
- RenewableEnergyProvider.RenewableEnergyProvider
+ThermalPowerPlant/REST/ThermalPowerPlantRESTConnector.java
+ ThermalPowerPlant.REST.ThermalPowerPlantRESTConnector
 ThermalPowerPlant/gRPC/ThermalPowerPlantServer.java
  ThermalPowerPlant.gRPC.ThermalPowerPlantServer
  ThermalPowerPlant.gRPC.ThermalPowerPlantServer$1
@@ -133,5 +133,5 @@ ThermalPowerPlant/grpc/ExitServiceGrpc.java
  ThermalPowerPlant.grpc.ExitServiceGrpc$ExitServiceMethodDescriptorSupplier
  ThermalPowerPlant.grpc.ExitServiceGrpc$ExitServiceStub
  ThermalPowerPlant.grpc.ExitServiceGrpc$MethodHandlers
-ThermalPowerPlant/REST/ThermalPowerPlantRESTConnector.java
- ThermalPowerPlant.REST.ThermalPowerPlantRESTConnector
+RenewableEnergyProvider/RenewableEnergyProvider.java
+ RenewableEnergyProvider.RenewableEnergyProvider
