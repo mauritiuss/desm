@@ -91,8 +91,9 @@ AdministrationServer/MQTT/AdministrationServerMQTTConnector.java
  AdministrationServer.MQTT.AdministrationServerMQTTConnector
 AdministrationServer/AdministrationServer.java
  AdministrationServer.AdministrationServer
-AdministrationClient/ClientMenu.java
- AdministrationClient.ClientMenu
+RenewableEnergyProvider/RenewableEnergyProvider.java
+ RenewableEnergyProvider.RenewableEnergyProvider
+ RenewableEnergyProvider.RenewableEnergyProvider$1
 AdministrationServer/AdministrationServerRunner.java
  AdministrationServer.AdministrationServerRunner
 Simulator/PollutionSensor.java
@@ -120,8 +121,6 @@ Simulator/BufferProperties.java
  Simulator.BufferProperties
 Simulator/Measurement.java
  Simulator.Measurement
-AdministrationClient/AdministrationClient.java
- AdministrationClient.AdministrationClient
 ThermalPowerPlant/grpc/ExitServiceGrpc.java
  ThermalPowerPlant.grpc.ExitServiceGrpc
  ThermalPowerPlant.grpc.ExitServiceGrpc$1
@@ -133,6 +132,7 @@ ThermalPowerPlant/grpc/ExitServiceGrpc.java
  ThermalPowerPlant.grpc.ExitServiceGrpc$ExitServiceMethodDescriptorSupplier
  ThermalPowerPlant.grpc.ExitServiceGrpc$ExitServiceStub
  ThermalPowerPlant.grpc.ExitServiceGrpc$MethodHandlers
-RenewableEnergyProvider/RenewableEnergyProvider.java
- RenewableEnergyProvider.RenewableEnergyProvider
- RenewableEnergyProvider.RenewableEnergyProvider$1
+AdministrationClient/ClientMenu.java
+ AdministrationClient.ClientMenu
+AdministrationClient/AdministrationClient.java
+ AdministrationClient.AdministrationClient

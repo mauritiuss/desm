@@ -46,14 +46,16 @@ public class ClientMenu implements DisplayableMenu {
 
     private int readControlledInt() {
         while (true) {
-            if (scanner.hasNextInt()){
-                int value = scanner.nextInt();
-                if (value <= 2 ){
+            String input = scanner.nextLine().trim(); // legge tutta la riga
+            try {
+                int value = Integer.parseInt(input);
+                if (value >= 0 && value <= 2) {
                     return value;
+                } else {
+                    i("ClientMenu", "Inserisci un numero valido tra 0 e 2");
                 }
-            }else{
-                scanner.next();
-                i("ClientMenu","Inserisci un numero valido");
+            } catch (NumberFormatException e) {
+                i("ClientMenu", "Inserisci un numero intero valido");
             }
         }
     }
