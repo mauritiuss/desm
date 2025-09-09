@@ -3,7 +3,7 @@ package ThermalPowerPlant;
 import Simulator.Buffer;
 import Simulator.Measurement;
 import common.model.Co2AveragesPacket;
-
+import static common.log.Log.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,7 +64,7 @@ public class Co2AveragesScheduler extends Thread{
 
                 //printMeasurements(averages, ts);
 
-                System.out.println(">>>[Co2AveragesScheduler] Creato packet: " + packet);
+                i("Co2AveragesScheduler","Creato packet: " + packet);
 
                 Thread.sleep(10_000); // In modo da pubblicare un pacchetto ogni 10 secondi
 
@@ -72,18 +72,18 @@ public class Co2AveragesScheduler extends Thread{
                 Thread.currentThread().interrupt();
                 break;
             } catch (Exception e){
-                System.out.println(">>>[Co2AveragesScheduler] Errore: " + e.getMessage());
+                e("Co2AveragesScheduler","Errore: " + e.getMessage());
                 Thread.currentThread().interrupt();
                 break;
             }
         }
-        System.out.println(">>>[Co2AveragesScheduler] Terminato.");
+        i("Co2AveragesScheduler","Terminato.");
     }
 
     private void printMeasurements(List<Measurement> averages, long ts) {
-        System.out.println(">>>[Co2AveragesScheduler] Pacchetto creato alle " + ts + " con " + averages.size() + " medie:");
+        i("Co2AveragesScheduler","Pacchetto creato alle " + ts + " con " + averages.size() + " medie:");
         for (Measurement m : averages) {
-            System.out.println("   -> Media: " + m.getValue() + " g, timestamp: " + m.getTimestamp());
+            i("Co2AveragesScheduler","   -> Media: " + m.getValue() + " g, timestamp: " + m.getTimestamp());
         }
     }
 }

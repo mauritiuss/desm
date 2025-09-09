@@ -1,5 +1,7 @@
 package AdministrationClient;
 
+import static common.log.Log.*;
+
 /**
  * Questa classe è usata per far partire il Client
  */
@@ -19,9 +21,9 @@ public class AdministrationClient {
                     menu.displayAverageBetweenTimestamp();
                     break;
                 default:
-                    System.out.println("Scelta non valida");
+                    w("AdministrationClient", "Scelta non valida");
             }
-            System.out.println("\n Premere invio per continuare...");
+            i("AdministrationClient", "Premere invio per continuare...");
             new java.util.Scanner(System.in).nextLine();
         }
     }

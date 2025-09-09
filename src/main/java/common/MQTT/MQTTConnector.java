@@ -3,6 +3,7 @@ package common.MQTT;
 import ThermalPowerPlant.ThermalPowerPlantRunner;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import static common.log.Log.*;
 
 /**
  * Questa classe astratta contiene tutti i metodi per la comunicazione MQTT
@@ -32,7 +33,7 @@ public abstract class MQTTConnector implements MqttCallbackExtended {
             client.connect(options);
 
         } catch (MqttException e) {
-            System.out.println(">>>[MQTTConnector] Errore creando il client MQTT: " + e.getMessage());
+            e("MQTTConnector", "Errore creando il client MQTT: ", e);
             System.exit(0);
         }
     }
@@ -43,9 +44,9 @@ public abstract class MQTTConnector implements MqttCallbackExtended {
     public void disconnect() {
         try{
             client.disconnect();
-            System.out.println(">>>[MQTTConnector] Disconnessione dal broker MQTT avvenuta con successo");
+            i("MQTTConnector", "Disconnessione dal broker MQTT avvenuta con successo");
         }catch (MqttException e){
-            System.out.println(">>>[MQTTConnector] Errore disconnessione dal broker MQTT: " + e.getMessage());
+            e("MQTTConnector", "Errore disconnessione dal broker MQTT", e);
         }
     }
 
@@ -61,7 +62,7 @@ public abstract class MQTTConnector implements MqttCallbackExtended {
             message.setRetained(true);
             client.publish(topic, message);
         }catch (MqttException e){
-            System.out.println(">>>[MQTTConnector] Errore publish: " + e.getMessage());
+            e("MQTTConnector", "Errore publish", e);
         }
     }
 
@@ -77,7 +78,7 @@ public abstract class MQTTConnector implements MqttCallbackExtended {
             msg.setRetained(false);
             client.publish(topic, msg);
         } catch (MqttException e) {
-            System.out.println(">>>[MQTTConnector] Errore publishNonRetained: " + e.getMessage());
+            e("MQTTConnector", "Errore publishNonRetained", e);
         }
     }
 
@@ -88,35 +89,35 @@ public abstract class MQTTConnector implements MqttCallbackExtended {
     @Override
     public void connectComplete(boolean reconnect, String serverURI){
         if (reconnect) {
-            System.out.println(">>>[MQTTConnector] "+ ThermalPowerPlant.ThermalPowerPlant.getInstance().getId() + " Riconnessione al MQTT broker avvenuta");
+            i("MQTTConnector", ThermalPowerPlant.ThermalPowerPlant.getInstance().getId() + " Riconnessione al MQTT broker avvenuta");
         }else{
             if (ThermalPowerPlant.ThermalPowerPlant.getInstance().getId() == null){
-                System.out.println(">>>[MQTTConnector] RenewableEnergyProvider connessione al MQTT broker avvenuta");
+                i("MQTTConnector", "RenewableEnergyProvider connessione al MQTT broker avvenuta");
             }else{
-                System.out.println(">>>[MQTTConnector] "+ ThermalPowerPlant.ThermalPowerPlant.getInstance().getId() + " Connessione al MQTT broker avvenuta");
+                i("MQTTConnector", ThermalPowerPlant.ThermalPowerPlant.getInstance().getId() + " Connessione al MQTT broker avvenuta");
             }
         }
     }
 
     @Override
     public void connectionLost(Throwable cause){
-        System.out.println(">>>[MQTTConnector] Connessione persa: " + cause.getMessage());
+        e("MQTTConnector", "Connessione persa: " + cause.getMessage());
         if (cause instanceof MqttException) {
             MqttException me = (MqttException) cause;
-            System.out.println(">>>[MQTTConnector] Reason code: " + me.getReasonCode());
-            System.out.println(">>>[MQTTConnector] Inner cause: " + me.getCause());
+            e("MQTTConnector", "  - Reason code: " + me.getReasonCode());
+            e("MQTTConnector", "  - Inner cause: " + me.getCause(), me);
             me.printStackTrace();
         }
     }
 
     @Override
     public void messageArrived(String topic, MqttMessage message) throws Exception {
-        System.out.println(">>>[MQTTConnector] Topic: " + topic + "+Messaggio: " + new String(message.getPayload()));
+        i("MQTTConnector", "Topic: " + topic + " | Messaggio: " + new String(message.getPayload()));
     }
 
     @Override
     public void deliveryComplete(IMqttDeliveryToken token) {
-        System.out.println(">>>[MQTTConnector] Messaggio consegnato: "+token.toString());
+        i("MQTTConnector", "Messaggio consegnato: " + token.toString());
     }
 
 

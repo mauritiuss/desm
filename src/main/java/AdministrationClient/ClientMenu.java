@@ -2,7 +2,7 @@ package AdministrationClient;
 
 import AdministrationClient.REST.AdministrationClientRESTConnector;
 import ThermalPowerPlant.ThermalPowerPlant;
-
+import static common.log.Log.*;
 import java.util.Scanner;
 
 /**
@@ -17,7 +17,7 @@ public class ClientMenu implements DisplayableMenu {
     @Override
     public int getChoice(){
         printMenu();
-        System.out.println("Inserisci la tua scelta: ");
+        ic( "Inserisci la tua scelta: ");
         return readControlledInt();
     }
 
@@ -27,8 +27,9 @@ public class ClientMenu implements DisplayableMenu {
 
         if(plants.length == 0){
             System.out.println("Nessuna Thermal Power Plant è presente");
+            i("ClientMenu","Nessuna Thermal Power Plant è presente");
         }else{
-            System.out.println("Thermal Power Plant:");
+            i("ClientMenu","Thermal Power Plant:");
             for (ThermalPowerPlant p : plants) {
                 System.out.println(p.toString());
             }
@@ -36,11 +37,11 @@ public class ClientMenu implements DisplayableMenu {
     }
 
     private void printMenu() {
-        System.out.println("\n --- Menu Administration Client ---");
-        System.out.println("1. Mostra elenco delle Thermal Power Plants");
-        System.out.println("2. Mostra statistiche emissioni CO₂");
-        System.out.println("0. Esci");
-        System.out.println("-----------------------------------\n");
+        ic("\n --- Menu Administration Client ---");
+        ic("1. Mostra elenco delle Thermal Power Plants");
+        ic("2. Mostra statistiche emissioni CO₂");
+        ic("0. Esci");
+        ic("-----------------------------------\n");
     }
 
     private int readControlledInt() {
@@ -52,7 +53,7 @@ public class ClientMenu implements DisplayableMenu {
                 }
             }else{
                 scanner.next();
-                System.out.println("Inserisci un numero valido");
+                i("ClientMenu","Inserisci un numero valido");
             }
         }
     }
@@ -63,31 +64,31 @@ public class ClientMenu implements DisplayableMenu {
                 return scanner.nextLong();
             } else {
                 scanner.next();
-                System.out.println("Inserisci un numero long valido (millisecondi).");
+                i("ClientMenu","Inserisci un numero long valido (millisecondi).");
             }
         }
     }
 
     @Override
     public void displayAverageBetweenTimestamp(){
-        System.out.println("Inserisci t1 (timestamp in millisecondi): ");
+        i("ClientMenu","Inserisci t1 (timestamp in millisecondi): ");
         long t1 = readControlledLong();
 
-        System.out.println("Inserisci t2 (timestamp in millisecondi): ");
+        i("ClientMenu","Inserisci t2 (timestamp in millisecondi): ");
         long t2 = readControlledLong();
 
         try{
             Double avg = AdministrationClientRESTConnector.getInstance().getAverageBetweenTimestamp(t1, t2);
 
             if(avg == null){
-                System.out.println("Nessuna misura trovata nell'intervallo [" + t1 + ", " + t2 + "].");
+                i("ClientMenu","Nessuna misura trovata nell'intervallo [" + t1 + ", " + t2 + "].");
             } else {
-                System.out.println("Media valori nell'intervallo [" + t1 + ", " + t2 + "]: " + avg);
+                i("ClientMenu","Media valori nell'intervallo [" + t1 + ", " + t2 + "]: " + avg);
             }
         } catch (IllegalArgumentException e){
-            System.out.println("Input non valido: t1 deve essere minore o uguale a t2.");
+            e("ClientMenu","Input non valido: t1 deve essere minore o uguale a t2.");
         } catch (Exception e){
-            System.out.println("Errore durante la richiesta: " + e.getMessage());
+            e("ClientMenu","Errore durante la richiesta: " + e.getMessage());
         }
     }
 }

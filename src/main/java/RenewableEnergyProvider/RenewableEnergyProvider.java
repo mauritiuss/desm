@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import static common.log.Log.*;
 
 import static common.MQTT.MQTTProperties.ENERGY_REQUEST_TOPIC;
 
@@ -22,9 +23,9 @@ public class RenewableEnergyProvider extends MQTTConnector {
 
     private void startPublishing() {
 
-        testSinglePublishing();
+        //testSinglePublishing();
 
-        /*
+
         Timer timer = new Timer();
 
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -46,9 +47,9 @@ public class RenewableEnergyProvider extends MQTTConnector {
                 );
 
                 publish(ENERGY_REQUEST_TOPIC, payload); //Utilizza il metodo della superclasse
-                System.out.println(">>>[RenewableEnergyProvider] Inviata richiesta per payload: " + payload);
+                i("RenewableEnergyProvider","Inviata richiesta per payload: " + payload);
             }
-        }, 0, PUBLISH_INTERVAL_MS);*/
+        }, 0, PUBLISH_INTERVAL_MS);
     }
 
     /*
@@ -72,7 +73,7 @@ public class RenewableEnergyProvider extends MQTTConnector {
         );
 
         publish(ENERGY_REQUEST_TOPIC, payload); //Utilizza il metodo della superclasse
-        System.out.println(">>>[RenewableEnergyProvider] Inviata richiesta per payload: " + payload);
+        i("RenewableEnergyProvider","Inviata richiesta per payload: " + payload);
     }
 
 

@@ -10,7 +10,7 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import ThermalPowerPlant.grpc.PresentationProto.PresentationAck;
 import ThermalPowerPlant.grpc.PresentationProto.PresentationMessage;
-
+import static common.log.Log.*;
 import javax.annotation.Nullable;
 
 
@@ -59,7 +59,7 @@ public class ThermalPowerPlantClient {
             PresentationAck response = blockingStub.presentYourself(request);
             //System.out.println(">>>[ThermalPowerPlantClient] Risposta dal server al messaggio Presentation: " + response.getMessage());
         } catch (Exception e) {
-            System.err.println(">>>[ThermalPowerPlantClient] Errore durante l'invio del messaggio Presentation gRPC: " + e.getMessage());
+            e("ThermalPowerPlantClient", "Errore durante l'invio del messaggio Presentation gRPC: " + e.getMessage());
 
         }
     }
@@ -116,7 +116,7 @@ public class ThermalPowerPlantClient {
             //kwh è primitivo, quindi non può essere null
             electionBuilder.setKwh(kwh);
 
-            System.out.println(">>>[ThermalPowerPlantClient] IsElection: "+timestamp+", candidateId: "+candidateId+", price: "+price);
+            i("ThermalPowerPlantClient", "IsElection: "+timestamp+", candidateId: "+candidateId+", price: "+price);
             message = ChangRobertsProto.ChangRobertsMessage.newBuilder()
                     .setElection(electionBuilder.build())
                     .build();
@@ -127,7 +127,7 @@ public class ThermalPowerPlantClient {
             electedBuilder.setWinnerId(winnerId != null ? winnerId : "");
             electedBuilder.setKwh(kwh);
 
-            System.out.println(">>>[ThermalPowerPlantClient] IsElected: "+timestamp+", winnerId: "+winnerId+", kwh: "+kwh);
+            i("ThermalPowerPlantClient", "IsElected: "+timestamp+", winnerId: "+winnerId+", kwh: "+kwh);
             message = ChangRobertsProto.ChangRobertsMessage.newBuilder()
                     .setElected(electedBuilder.build())
                     .build();
@@ -135,9 +135,9 @@ public class ThermalPowerPlantClient {
 
         try {
             ChangRobertsProto.Ack response = changRobertsBlockingStub.sendMessage(message);
-            System.out.println(">>>[ThermalPowerPlantClient] Risposta dal server al messaggio ChangRoberts: " + response.getMessage());
+            i("ThermalPowerPlantClient", "Risposta dal server al messaggio ChangRoberts: " + response.getMessage());
         } catch (Exception e) {
-            System.err.println(">>>[ThermalPowerPlantClient] Errore durante l'invio del messaggio ChangRoberts gRPC : " + e.getMessage());
+            e("ThermalPowerPlantClient", "Errore durante l'invio del messaggio ChangRoberts gRPC : " + e.getMessage());
         }
     }
 
@@ -164,7 +164,7 @@ public class ThermalPowerPlantClient {
         try{
             ExitAck response = exitBlockingStub.sendMessage(message);
         } catch (Exception e) {
-            System.err.println(">>>[ThermalPowerPlantClient] Errore durante l'invio del messaggio exit gRPC: " + e.getMessage());
+            e("ThermalPowerPlantClient", "Errore durante l'invio del messaggio exit gRPC: " + e.getMessage());
         }
     }
 

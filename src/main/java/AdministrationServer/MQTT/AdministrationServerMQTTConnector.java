@@ -2,7 +2,6 @@ package AdministrationServer.MQTT;
 
 import AdministrationServer.AdministrationServer;
 import Simulator.Measurement;
-import ThermalPowerPlant.ThermalPowerPlant;
 import common.MQTT.MQTTConnector;
 import common.MQTT.MQTTProperties;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -12,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static common.log.Log.*;
 
 public class AdministrationServerMQTTConnector extends MQTTConnector {
 
@@ -23,9 +24,9 @@ public class AdministrationServerMQTTConnector extends MQTTConnector {
 
         try{
             client.subscribe(MQTTProperties.CO2_AVERAGES_TOPIC, MQTTProperties.QOS);
-            System.out.println(">>>[AdministrationServerMQTTConnector] AdministrationServer iscritto al topic: " + MQTTProperties.CO2_AVERAGES_TOPIC+"\n");
+            i("AdministrationServerMQTTConnector", "Iscritto al topic: "+MQTTProperties.CO2_AVERAGES_TOPIC);
         }catch (MqttException e){
-            System.out.println(">>>[AdministrationServerMQTTConnector] Errore nella sottoscrizione: "+e.getMessage());
+            e("AdministrationServerMQTTConnector", "Errore nella sottoscrizione",e);
         }
     }
 
@@ -33,24 +34,23 @@ public class AdministrationServerMQTTConnector extends MQTTConnector {
     public void messageArrived(String topic, MqttMessage message){
         String payload = new String(message.getPayload());
         String thermalPowerPlantId = extractPlantIdFromTopic(topic);
-        System.out.println(">>>[AdministrationServerMQTTConnector] Dati di inquinamento ricevuti per il topic: " + topic +": "+payload);
+        i("AdministrationServerMQTTConnector", "Dati di inquinamento ricevuti per il topic: " + topic +": "+payload);
 
         try{
             List<Measurement> measurements = parseMeasurements(payload);
 
             for (Measurement m : measurements) {
-                System.out.println(">>>[AdministrationServerMQTTConnector] Measurement parsato: " + m.toString() + ", Id Thermal Power Plant: " + thermalPowerPlantId);
+                i("AdministrationServerMQTTConnector", "Measurement parsato: " + m.toString() + ", Id Thermal Power Plant: " + thermalPowerPlantId);
                 administrationServer.saveMeasurement(thermalPowerPlantId, m);
             }
 
             administrationServer.printStorage();
 
         }catch (Exception e){
-            System.out.println(">>>[AdministrationServerMQTTConnector] ERRORE parsing/salvataggio: " + e.getMessage());
+            e("AdministrationServerMQTTConnector", "Errore parsing/salvataggio: " + e.getMessage());
             e.printStackTrace();
         }
     }
-
 
     private List<Measurement> parseMeasurements(String json) {
         if (json == null || json.isEmpty()) throw new IllegalArgumentException("Payload vuoto");

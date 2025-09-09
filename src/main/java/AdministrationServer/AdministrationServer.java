@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import Simulator.Measurement;
-import common.model.Co2AveragesPacket;
+import static common.log.Log.*;
 
 
 public class AdministrationServer {
@@ -63,13 +62,13 @@ public class AdministrationServer {
      * Stampa lo stato corrente dello storage su console.
      */
     public synchronized void printStorage() {
-        System.out.println(">>> [AdministrationServer] Contenuto dello storage:");
+        i("AdministrationServer", "Contenuto dello storage:");
         for (Map.Entry<String, List<Measurement>> entry : storage.entrySet()) {
             String plantId = entry.getKey();
             List<Measurement> measurements = entry.getValue();
-            System.out.println("   PlantId = " + plantId);
+            i("AdministrationServer", "   PlantId = " + plantId);
             for (Measurement m : measurements) {
-                System.out.println("      - " + m.toString());
+                i("AdministrationServer", "      - " + m.toString());
             }
         }
     }

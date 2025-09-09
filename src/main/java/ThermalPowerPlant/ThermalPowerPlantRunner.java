@@ -5,7 +5,7 @@ import Simulator.SlidingWindowBuffer;
 import ThermalPowerPlant.MQTT.ThermalPowerPlantMQTTConnector;
 import ThermalPowerPlant.REST.ThermalPowerPlantRESTConnector;
 import ThermalPowerPlant.gRPC.ThermalPowerPlantGRPCConnector;
-
+import static common.log.Log.*;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.Random;
@@ -28,7 +28,7 @@ public class ThermalPowerPlantRunner{
 
         //1. Registrazione della ThermalPowerPlant --> REST
         if (!registerThermalPowerPlant()) { //Se non va a buon fine blocca tutto
-            System.out.println(">>>[ThermalPowerPlantRunner] Impossibile registrare la ThermalPowerPlant");
+            w("ThermalPowerPlantRunner","Impossibile registrare la ThermalPowerPlant");
             System.exit(0);
         }else{ //Se va a buon fine
 
@@ -39,10 +39,9 @@ public class ThermalPowerPlantRunner{
                     Buffer buffer = new SlidingWindowBuffer();
                     ThermalPowerPlant.getInstance().initPollutionMonitoring(buffer);
                     ThermalPowerPlant.getInstance().startAveragesScheduler();
-                    System.out.println(">>>[ThermalPowerPlantRunner] Sensore CO2 e scheduler avviati.");
+                    i("ThermalPowerPlantRunner","Sensore CO2 e scheduler avviati.");
                 }catch (Exception e){
-                    System.out.println(">>>[ThermalPowerPlantRunner] Errore avvio sensore/scheduler: " + e.getMessage());
-                    e.printStackTrace();
+                    e("ThermalPowerPlantRunner","Errore avvio sensore/scheduler: " + e.getMessage());
                 }
             }, "Starter-Sensor-Scheduler").start();
 
@@ -97,7 +96,7 @@ public class ThermalPowerPlantRunner{
      */
     private static void startConsoleExitListener() {
         Thread t = new Thread(() -> {
-            System.out.println(">>>[ThermalPowerPlantRunner] Digita 'exit' per uscire dalla rete in modo controllato");
+            i("ThermalPowerPlantRunner","Digita 'exit' per uscire dalla rete in modo controllato");
             try(Scanner scanner = new Scanner(System.in)){
                 while(true){
                     if(!scanner.hasNextLine()) break;
@@ -108,8 +107,7 @@ public class ThermalPowerPlantRunner{
                     }
                 }
             } catch (Exception e){
-                System.out.println(">>>[ThermalPowerPlantRunner] Errore nel listener della console: "+e.getMessage());
-                e.printStackTrace();
+                e("ThermalPowerPlantRunner"," Errore nel listener della console: "+e.getMessage());
             }
         }, "ConsoleExitListener");
         t.setDaemon(true);
@@ -124,21 +122,21 @@ public class ThermalPowerPlantRunner{
      * - shutdown di sensore, scheduler, MQTT, gRPC.
      */
     private static void onExitRequested() {
-        System.out.println(">>>[ThermalPowerPlantRunner] Comando di exit ricevuto. Avvio procedura di uscita...");
+        i("ThermalPowerPlantRunner","Comando di exit ricevuto. Avvio procedura di uscita...");
 
         // Uscita tramite gRPC
         try{
             ThermalPowerPlantGRPCConnector.getInstance().leaveRing();
         }catch (Exception e){
-            System.out.println(">>>[ThermalPowerPlantRunner] Errore leaveRing: " + e.getMessage());
+            e("ThermalPowerPlantRunner","Errore leaveRing: " + e.getMessage());
         }
 
         // Deregistrazione dal server REST
         try{
             boolean ok = ThermalPowerPlantRESTConnector.getInstance().removeThermalPowerPlant();
-            System.out.println(">>>[ThermalPowerPlantRunner] Deregistrazione dal server REST: "+ok);
+            i("ThermalPowerPlantRunner","Deregistrazione dal server REST: "+ok);
         }catch (Exception e){
-            System.out.println(">>>[ThermalPowerPlantRunner] Errore deregistrazione dal server REST: " + e.getMessage());
+            e("ThermalPowerPlantRunner","Errore deregistrazione dal server REST: " + e.getMessage());
         }
 
 
@@ -153,10 +151,10 @@ public class ThermalPowerPlantRunner{
                 connector.disconnect();
             }
         }catch (Exception e){
-            System.out.println(">>>[ThermalPowerPlantRunner] Errore shutdown locale: " + e.getMessage());
+            e("ThermalPowerPlantRunner","Errore shutdown locale: " + e.getMessage());
         }
 
-        System.out.println(">>>[ThermalPowerPlantRunner] Uscita completata.");
+        i("ThermalPowerPlantRunner","Uscita completata.");
         System.exit(0);
 
     }

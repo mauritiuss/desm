@@ -2,7 +2,7 @@ package Simulator;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import static common.log.Log.*;
 import static Simulator.BufferProperties.STEP;
 import static Simulator.BufferProperties.WINDOW_SIZE;
 
@@ -50,7 +50,7 @@ public class SlidingWindowBuffer implements Buffer{
 
             readyAvarages.add(new Measurement(id, avgType, avg, ts));
 
-            System.out.println(">>>[SlidingWindowBuffer] Media calcolata: " + avg + " g (su " + WINDOW_SIZE + " valori)\n");
+            i("SlidingWindowBuffer"," Media calcolata: " + avg + " g (su " + WINDOW_SIZE + " valori)\n");
 
             //Avanzo la finestra di STEP (50%)
             for (int i =0; i < STEP && !window.isEmpty(); i++) {
@@ -64,9 +64,9 @@ public class SlidingWindowBuffer implements Buffer{
     }
 
     private void printValue(List<Measurement> window) {
-        System.out.println(">>>[SlidingWindowBuffer] Calcolo media su finestra:");
+        i("SlidingWindowBuffer"," Calcolo media su finestra:");
         for (Measurement measurement : window) {
-            System.out.println("   -> Valore: " + measurement.getValue() + " g, timestamp: " + measurement.getTimestamp());
+            i("SlidingWindowBuffer","   -> Valore: " + measurement.getValue() + " g, timestamp: " + measurement.getTimestamp());
         }
     }
 

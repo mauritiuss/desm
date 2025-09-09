@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import static common.log.Log.*;
 
 import static AdministrationServer.REST.RESTServerProperties.BASE_URL;
 
@@ -59,14 +60,14 @@ public class ThermalPowerPlantRESTConnector {
             }
         }catch (HttpClientErrorException e) {
             if(e.getStatusCode() == HttpStatus.CONFLICT){
-                System.out.println(">>>[ThermalPowerPlantRESTConnector] ID già presente (Errore 409): " + thermalPowerPlant.getId());
+                w("ThermalPowerPlantRESTConnector","ID già presente (Errore 409): " + thermalPowerPlant.getId());
                 return false;
             }else{
-                System.out.println(">>>[ThermalPowerPlantRESTConnector] Errore HTTP: " + e.getStatusCode());
+                w("ThermalPowerPlantRESTConnector","Errore HTTP: " + e.getStatusCode());
                 return false;
             }
         }catch (Exception e) {
-            System.out.println(">>>[ThermalPowerPlantRESTConnector] Errore durante l'invio della ThermalPowerPlant: " + e.getMessage());
+            e("ThermalPowerPlantRESTConnector","Errore durante l'invio della ThermalPowerPlant: " + e.getMessage());
             return false;
         }
     }
@@ -82,7 +83,7 @@ public class ThermalPowerPlantRESTConnector {
 
             return response.getBody() != null ? response.getBody() : new ThermalPowerPlant[0];
         } catch (Exception e) {
-            System.err.println("Errore durante la richiesta al server: " + e.getMessage());
+            e("ThermalPowerPlantRESTConnector","Errore durante la richiesta al server: " + e.getMessage());
             return new ThermalPowerPlant[0];
         }
     }
@@ -94,10 +95,10 @@ public class ThermalPowerPlantRESTConnector {
             restTemplate.delete(url);
             return true;
         } catch (HttpClientErrorException.NotFound e) {
-            System.out.println(">>>[ThermalPowerPlantRESTConnector] ID non trovato sul server: " + e.getMessage());
+            e("ThermalPowerPlantRESTConnector","ID non trovato sul server: " + e.getMessage());
             return false;
         } catch (Exception e) {
-            System.out.println(">>>[ThermalPowerPlantRESTConnector] Errore durante la rimozione: " + e.getMessage());
+            e("ThermalPowerPlantRESTConnector","Errore durante la rimozione: " + e.getMessage());
             return false;
         }
     }

@@ -5,6 +5,8 @@ import ThermalPowerPlant.ThermalPowerPlant;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
+import static common.log.Log.*;
+
 /*
     Service è il componente centrale della logica applicativa per:
     •	Aggiungere, leggere, cercare gli impianti
@@ -45,13 +47,13 @@ public class ThermalPowerPlantService {
 
         for (ThermalPowerPlant p : thermalPowerPlantList) {
             if (p.getId() != null && p.getId().equalsIgnoreCase(newId)) {
-                System.out.println(">>>[ThermalPowerPlantService] ID già esistente: "+newId);
+                i("ThermalPowerPlantService", "ID già esistente: "+newId);
                 return false;
             }
         }
 
         thermalPowerPlantList.add(thermalPowerPlant);
-        System.out.println(">>>[ThermalPowerPlantService] Aggiunta ThermalPowerPlant con ID: " + newId);
+        i("ThermalPowerPlantService", "Aggiunta ThermalPowerPlant con ID: " + newId);
         return true;
     }
 
@@ -61,14 +63,14 @@ public class ThermalPowerPlantService {
      * @return l'oggetto ThermalPowerPlant se trovato, null altrimenti.
      */
     public synchronized ThermalPowerPlant getById(String id) {
-        System.out.println(">>>[ThermalPowerPlantService] Cercando di restituire la ThermalPowerPlant con ID: " + id);
+        i("ThermalPowerPlantService", "Cercando di restituire la ThermalPowerPlant con ID: " + id);
         for (ThermalPowerPlant thermalPowerPlant : thermalPowerPlantList) {
             if (thermalPowerPlant.getId() != null && thermalPowerPlant.getId().equalsIgnoreCase(id)) {
-                System.out.println(">>>[ThermalPowerPlantService] Ritorno della ThermalPowerPlant con ID: " + id);
+                i("ThermalPowerPlantService", "Ritorno della ThermalPowerPlant con ID: " + id);
                 return thermalPowerPlant;
             }
         }
-        System.out.println(">>>[ThermalPowerPlantService] Non è stata trovata nessuna ThermalPowerPlant con ID: " + id);
+        i("ThermalPowerPlantService", "Non è stata trovata nessuna ThermalPowerPlant con ID: " + id);
         return null; // Not found
     }
 
@@ -88,11 +90,11 @@ public class ThermalPowerPlantService {
         for (ThermalPowerPlant thermalPowerPlant : thermalPowerPlantList) {
             if( thermalPowerPlant.getId() != null && thermalPowerPlant.getId().equalsIgnoreCase(id)) {
                 thermalPowerPlantList.remove(thermalPowerPlant);
-                System.out.println(">>>[ThermalPowerPlantService] Rimossa ThermalPowerPlant con ID: " + id);
+                i("ThermalPowerPlantService", "Rimossa ThermalPowerPlant con ID: " + id);
                 return true;
             }
         }
-        System.out.println(">>>[ThermalPowerPlantService] Nessuna ThermalPowerPlant con ID: " + id);
+        i("ThermalPowerPlantService", "Nessuna ThermalPowerPlant con ID: " + id);
         return false;
     }
 

@@ -2,7 +2,7 @@ package ThermalPowerPlant.gRPC;
 
 import ThermalPowerPlant.REST.ThermalPowerPlantRESTConnector;
 import ThermalPowerPlant.ThermalPowerPlant;
-
+import static common.log.Log.*;
 import java.io.IOException;
 
 public class ThermalPowerPlantGRPCConnector {
@@ -35,7 +35,7 @@ public class ThermalPowerPlantGRPCConnector {
                 ThermalPowerPlantServer server = new ThermalPowerPlantServer(ThermalPowerPlant.getInstance().getPort());
                 server.start();
             } catch (IOException e) {
-                System.err.println(">>>[GRPCConnector] Errore durante l'avvio del server gRPC: " + e.getMessage());
+                e("ThermalPowerPlantGRPCConnector","Errore durante l'avvio del server gRPC: " + e.getMessage());
                 e.printStackTrace();
             }
         }).start();
@@ -52,9 +52,9 @@ public class ThermalPowerPlantGRPCConnector {
             ThermalPowerPlant.getInstance().setNextId(firstPlant.getId());
             ThermalPowerPlant.getInstance().setNextAddress(firstPlant.getAddress());
             ThermalPowerPlant.getInstance().setNextPort(firstPlant.getPort());
-            System.out.println(">>>[ThermalPowerPlantGRPCConnector] Prima ThermalPowerPlant dell'anello: " + firstPlant);
+            i("ThermalPowerPlantGRPCConnector","Prima ThermalPowerPlant dell'anello: " + firstPlant);
         } else {
-            System.out.println(">>>[ThermalPowerPlantGRPCConnector] Nessuna ThermalPowerPlant trovata.");
+            i("ThermalPowerPlantGRPCConnector","Nessuna ThermalPowerPlant trovata.");
         }
     }
 
@@ -65,7 +65,7 @@ public class ThermalPowerPlantGRPCConnector {
         ThermalPowerPlant plant = ThermalPowerPlant.getInstance();
 
         if (!isAloneInRing()) {
-            System.out.println(">>>[ThermalPowerPlantGRPCConnector] "+plant.getId()+" Invio del messaggio di presentazione al mio next: "+plant.getNextId());
+            i("ThermalPowerPlantGRPCConnector",""+plant.getId()+" Invio del messaggio di presentazione al mio next: "+plant.getNextId());
             //Creo il client per collegarmi al successore dell'anello
             ThermalPowerPlantClient client = new ThermalPowerPlantClient(
                     plant.getNextAddress(), plant.getNextPort()
@@ -81,7 +81,7 @@ public class ThermalPowerPlantGRPCConnector {
             client.shutdown();
 
         } else {
-            System.out.println(">>>[ThermalPowerPlantGRPCConnector] Nessun destinatario valido per il messaggio di presentazione.");
+            i("ThermalPowerPlantGRPCConnector","Nessun destinatario valido per il messaggio di presentazione.");
         }
     }
 
@@ -96,7 +96,7 @@ public class ThermalPowerPlantGRPCConnector {
         ThermalPowerPlant plant = ThermalPowerPlant.getInstance();
 
         if (!isAloneInRing()) {
-            System.out.println(">>>[ThermalPowerPlantGRPCConnector] "+plant.getId()+" Invio del messaggio di elezione per richiesta: "+requestTimestamp+", energia richiesta: "+energyRequestKwh+" Valore proposto: "+plant.getPrice(requestTimestamp));
+            i("ThermalPowerPlantGRPCConnector",""+plant.getId()+" Invio del messaggio di elezione per richiesta: "+requestTimestamp+", energia richiesta: "+energyRequestKwh+" Valore proposto: "+plant.getPrice(requestTimestamp));
             //Creo il client per collegarmi al successore dell'anello
             ThermalPowerPlantClient client = new ThermalPowerPlantClient(
                     plant.getNextAddress(), plant.getNextPort()
@@ -112,7 +112,7 @@ public class ThermalPowerPlantGRPCConnector {
             );
             client.shutdown();
         } else {
-            System.out.println(">>>[ThermalPowerPlantGRPCConnector] Nessun destinatario valido per il messaggio di elezione.");
+            i("ThermalPowerPlantGRPCConnector"," Nessun destinatario valido per il messaggio di elezione.");
 
             //TODO: Sono l'unico nodo nell'anello, quindi soddisfo la richiesta.
         }
@@ -125,7 +125,7 @@ public class ThermalPowerPlantGRPCConnector {
 
         //Se sono da solo nell'anello, non serve propagare
         if(isAloneInRing()) {
-            System.out.println(">>>[ThermalPowerPlantGRPCConnector] Solo nell'anello, nessuna propagazione necessaria");
+            i("ThermalPowerPlantGRPCConnector"," Solo nell'anello, nessuna propagazione necessaria");
             return;
         }
 
@@ -141,7 +141,7 @@ public class ThermalPowerPlantGRPCConnector {
         );
         client.shutdown();
 
-        System.out.println(">>>[ThermalPowerPlantGRPCConnector] ExitMessage inviato da: "+plant.getId()+" al next: "+plant.getNextId());
+        i("ThermalPowerPlantGRPCConnector"," ExitMessage inviato da: "+plant.getId()+" al next: "+plant.getNextId());
     }
 
     /**
